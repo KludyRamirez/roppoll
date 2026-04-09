@@ -90,6 +90,60 @@ public class PollsController(AppDbContext db) : ControllerBase
     }
 
     // ════════════════════════════════════════
+    // POST /api/polls/{id}/vote — Cast a vote
+    // ════════════════════════════════════════
+    [Authorize]
+    [HttpPost("{id}/vote")]
+    public async Task<ActionResult<PollResponse>> Vote(int id, VoteRequest request)
+    {
+        var callerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        // Load the poll with options and votes
+        var poll = await db.Polls
+            .Include(p => p.Creator)
+            .Include(p => p.Options)
+                .ThenInclude(o => o.Votes)
+            .Include(p => p.Votes)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (poll is null)
+            return NotFound(new { message = "Poll not found" });
+
+        // Cannot vote on an expired poll
+        if (poll.Status == PollStatus.Expired)
+            return BadRequest(new { message = "This poll has already expired" });
+
+        // Creator cannot vote on their own poll
+        if (poll.CreatorId == callerId)
+            return BadRequest(new { message = "You cannot vote on your own poll" });
+
+        // Verify the chosen option actually belongs to this poll
+        var option = poll.Options.FirstOrDefault(o => o.Id == request.OptionId);
+        if (option is null)
+            return BadRequest(new { message = "Invalid option" });
+
+        // Check if already voted — the DB unique index will also catch this,
+        // but checking first gives a cleaner error message
+        var alreadyVoted = poll.Votes.Any(v => v.VoterId == callerId);
+        if (alreadyVoted)
+            return Conflict(new { message = "You have already voted on this poll" });
+
+        // Save the vote
+        db.Votes.Add(new Vote
+        {
+            PollId = id,
+            VoterId = callerId,
+            OptionId = request.OptionId
+        });
+
+        await db.SaveChangesAsync();
+
+        // Re-fetch updated poll and return it
+        var updated = await GetPollWithDetails(id, callerId);
+        return Ok(updated);
+    }
+
+    // ════════════════════════════════════════
     // Helpers
     // ════════════════════════════════════════
 

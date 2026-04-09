@@ -21,6 +21,12 @@ public class CreatePollRequest
     public int DurationSeconds { get; set; }
 }
 
+public class VoteRequest
+{
+    [Required]
+    public int OptionId { get; set; }
+}
+
 // ─── Response DTOs ──────────────────────────────────────────
 
 public class PollOptionResponse

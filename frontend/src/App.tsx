@@ -61,9 +61,6 @@ function AppRoutes() {
         }
       />
 
-      {/* Poll detail — added in Phase 2 */}
-      {/* <Route path="/polls/:id" element={<PollDetailPage />} /> */}
-
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

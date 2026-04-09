@@ -26,6 +26,28 @@ export function usePoll(id: number) {
   });
 }
 
+// ─── Vote: POST /api/polls/:id/vote ─────────────────────────
+export function useVote(pollId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (optionId: number) => {
+      const { data } = await api.post<Poll>(`/polls/${pollId}/vote`, { optionId });
+      return data;
+    },
+    onSuccess: (updatedPoll) => {
+      // Update the single poll cache with fresh data from server
+      queryClient.setQueryData(["poll", pollId], updatedPoll);
+
+      // Also update this poll inside the feed cache so counts
+      // reflect immediately without a full feed re-fetch
+      queryClient.setQueriesData<Poll[]>({ queryKey: ["polls"] }, (old) =>
+        old?.map((p) => (p.id === pollId ? updatedPoll : p)) ?? old
+      );
+    },
+  });
+}
+
 // ─── Create poll: POST /api/polls ────────────────────────────
 export function useCreatePoll() {
   const queryClient = useQueryClient();
