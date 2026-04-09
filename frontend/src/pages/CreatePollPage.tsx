@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCreatePoll } from "../hooks/usePolls";
 import { DURATION_OPTIONS } from "../types/poll";
@@ -13,7 +13,7 @@ export default function CreatePollPage() {
   const [durationSeconds, setDurationSeconds] = useState(300); // default: 5 min
   const [validationError, setValidationError] = useState("");
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: { preventDefault(): void }) => {
     e.preventDefault();
     setValidationError("");
 

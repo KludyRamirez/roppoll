@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForgotPassword } from "../hooks/useAuth";
 
@@ -6,7 +6,7 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const forgotPassword = useForgotPassword();
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: { preventDefault(): void }) => {
     e.preventDefault();
     forgotPassword.mutate(email);
   };

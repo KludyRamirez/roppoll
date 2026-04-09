@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useRegister } from "../hooks/useAuth";
 import { useAuthStore } from "../stores/authStore";
@@ -11,7 +11,7 @@ export default function RegisterPage() {
 
   if (user) return <Navigate to="/" replace />;
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: { preventDefault(): void }) => {
     e.preventDefault();
     register.mutate({ email, password });
   };

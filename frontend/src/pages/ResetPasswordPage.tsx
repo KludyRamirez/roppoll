@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useResetPassword } from "../hooks/useAuth";
 
@@ -14,7 +14,7 @@ export default function ResetPasswordPage() {
 
   const resetPassword = useResetPassword();
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: { preventDefault(): void }) => {
     e.preventDefault();
     setMismatchError("");
 

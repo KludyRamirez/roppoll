@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useLogin } from "../hooks/useAuth";
 import { useAuthStore } from "../stores/authStore";
@@ -17,7 +17,7 @@ export default function LoginPage() {
   // If already logged in, redirect to dashboard
   if (user) return <Navigate to="/" replace />;
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: { preventDefault(): void }) => {
     e.preventDefault();
     login.mutate({ email, password });
   };
