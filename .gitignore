@@ -1,6 +1,8 @@
 # ─── Backend (ASP.NET) ───────────────────────────────────────
 backend/bin/
 backend/obj/
+tests/bin/
+tests/obj/
 backend/*.user
 backend/.vs/
 
