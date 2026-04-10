@@ -73,13 +73,17 @@ roppoll/
 ├── frontend/src/
 │   ├── lib/axios.ts                      # Axios instance + interceptors + Mutex
 │   ├── stores/authStore.ts               # Zustand store
-│   ├── hooks/useAuth.ts                  # TanStack Query hooks
+│   ├── hooks/useAuth.ts                  # Auth mutations (login, register, logout, etc.)
+│   ├── hooks/usePolls.ts                 # Poll queries + mutations
+│   ├── types/poll.ts                     # Poll/PollOption types + DURATION_OPTIONS
+│   ├── components/PollCard.tsx           # Expandable inline poll card
 │   └── pages/
 │       ├── LoginPage.tsx
 │       ├── RegisterPage.tsx
-│       ├── DashboardPage.tsx
 │       ├── ForgotPasswordPage.tsx
-│       └── ResetPasswordPage.tsx
+│       ├── ResetPasswordPage.tsx
+│       ├── PollFeedPage.tsx              # Main feed (nav + poll list)
+│       └── CreatePollPage.tsx            # Create poll form
 │
 ├── ARCHITECTURE.md                       # Full system design explanation
 └── CLAUDE.md                             # This file
@@ -120,7 +124,7 @@ dotnet ef migrations add <MigrationName>
 dotnet ef database update
 ```
 
-**Tables:** `Users`, `RefreshTokens`, `PasswordResetTokens`
+**Tables:** `Users`, `RefreshTokens`, `PasswordResetTokens`, `Polls`, `PollOptions`, `Votes`
 
 ---
 

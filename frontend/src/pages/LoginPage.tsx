@@ -14,7 +14,7 @@ export default function LoginPage() {
   // - isError/error: error state
   const login = useLogin();
 
-  // If already logged in, redirect to dashboard
+  // If already logged in, redirect to feed
   if (user) return <Navigate to="/" replace />;
 
   const handleSubmit = (e: { preventDefault(): void }) => {
