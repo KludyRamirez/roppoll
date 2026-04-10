@@ -2,12 +2,14 @@ import { Link } from "react-router-dom";
 import { usePollFeed } from "../hooks/usePolls";
 import { useAuthStore } from "../stores/authStore";
 import { useLogout } from "../hooks/useAuth";
+import { usePollHub } from "../hooks/usePollHub";
 import PollCard from "../components/PollCard";
 
 export default function PollFeedPage() {
   const user = useAuthStore((s) => s.user);
   const logout = useLogout();
   const { data: polls, isLoading, isError } = usePollFeed();
+  usePollHub(); // Subscribe to real-time poll updates
 
   return (
     <div style={{ maxWidth: 620, margin: "0 auto", padding: "24px 20px" }}>

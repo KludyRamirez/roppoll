@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RopPoll.Api.Data;
+using RopPoll.Api.Hubs;
 using RopPoll.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +50,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
         opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddSignalR()
+    .AddJsonProtocol(opts =>
+        opts.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddHostedService<PollExpiryService>();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
@@ -64,5 +69,6 @@ app.UseAuthentication();   // Reads the JWT from the Authorization header
 app.UseAuthorization();    // Enforces [Authorize] attributes
 
 app.MapControllers();
+app.MapHub<PollHub>("/hubs/polls");
 
 app.Run();
