@@ -135,7 +135,7 @@ roppoll/
 │   │   ├── PollOption.cs
 │   │   └── Vote.cs
 │   ├── Services/
-│   │   ├── ClaudeService.cs          # OpenAI gpt-4o-mini opinion (IClaudeService)
+│   │   ├── OpenAiService.cs          # OpenAI gpt-4o-mini opinion (IOpenAiService)
 │   │   ├── EmailService.cs           # Gmail SMTP password reset (IEmailService)
 │   │   └── PollExpiryService.cs      # BackgroundService — expires polls + calls AI
 │   ├── Program.cs                    # App config + middleware pipeline
@@ -162,7 +162,7 @@ roppoll/
 │
 ├── tests/
 │   ├── RopPoll.Tests.csproj
-│   └── Services/ClaudeServiceTests.cs  # xUnit: ClaudeService.Parse() — 10 cases
+│   └── Services/OpenAiServiceTests.cs  # xUnit: OpenAiService.Parse() — 10 cases
 │
 ├── frontend/e2e/
 │   └── poll-flow.spec.ts               # Playwright: auth + create poll + vote — 11 cases

@@ -29,7 +29,7 @@ public class PollExpiryService(
     {
         using var scope = scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var claude = scope.ServiceProvider.GetRequiredService<IClaudeService>();
+        var claude = scope.ServiceProvider.GetRequiredService<IOpenAiService>();
 
         var now = DateTime.UtcNow;
 

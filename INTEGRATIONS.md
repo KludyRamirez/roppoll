@@ -29,7 +29,7 @@ ASP.NET's dependency injection makes `IConfiguration` available anywhere in the 
 
 ---
 
-### Step 2 — The service (`ClaudeService.cs`)
+### Step 2 — The service (`OpenAiService.cs`)
 
 This is the only file that talks to OpenAI. It has one job: given a question and two options, return which one GPT picks and why.
 
@@ -75,13 +75,13 @@ return Parse(text);
 
 ### Step 3 — Who calls the service?
 
-`ClaudeService` is never called directly from a controller (no HTTP endpoint triggers it). It is called by the **background service** `PollExpiryService`, which runs on a 30-second loop:
+`OpenAiService` is never called directly from a controller (no HTTP endpoint triggers it). It is called by the **background service** `PollExpiryService`, which runs on a 30-second loop:
 
 ```
 Every 30 seconds:
   1. Find all polls where Status = Active AND ExpiresAt has passed
   2. Mark them as Expired
-  3. For each expired poll → call ClaudeService.GetOpinionAsync()
+  3. For each expired poll → call OpenAiService.GetOpinionAsync()
   4. Save the AI's choice and reason to the database
   5. Broadcast the result to all connected browsers (via SignalR)
 ```
@@ -95,14 +95,14 @@ If the AI call fails for any reason (network error, bad format, etc.), the poll'
 In `Program.cs`:
 
 ```csharp
-builder.Services.AddScoped<IClaudeService, ClaudeService>();
+builder.Services.AddScoped<IOpenAiService, OpenAiService>();
 ```
 
 `Scoped` means a new instance is created per database scope. `PollExpiryService` manually creates a scope to get it (because background services are singletons and can't directly inject scoped services):
 
 ```csharp
 using var scope  = scopeFactory.CreateScope();
-var claude = scope.ServiceProvider.GetRequiredService<IClaudeService>();
+var claude = scope.ServiceProvider.GetRequiredService<IOpenAiService>();
 ```
 
 ---
@@ -247,7 +247,7 @@ User creates poll (60 second timer)
         │
         ├─► Marks poll as Expired in DB
         │
-        ├─► Calls ClaudeService.GetOpinionAsync()
+        ├─► Calls OpenAiService.GetOpinionAsync()
         │         │
         │         └─► Sends prompt to OpenAI gpt-4o-mini
         │             Parses CHOICE + REASON from reply

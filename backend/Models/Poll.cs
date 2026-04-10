@@ -29,7 +29,7 @@ public class Poll
     public PollStatus Status { get; set; } = PollStatus.Active;
     public AiStatus AiStatus { get; set; } = AiStatus.Pending;
 
-    // Set by ClaudeService after the poll expires
+    // Set by OpenAiService after the poll expires
     public int? AiChoiceOptionId { get; set; }
     public string? AiExplanation { get; set; }
 

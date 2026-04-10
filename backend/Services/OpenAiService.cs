@@ -3,7 +3,7 @@ using OpenAI.Chat;
 
 namespace RopPoll.Api.Services;
 
-public interface IClaudeService
+public interface IOpenAiService
 {
     // Returns the chosen option's index (0 or 1) and a short explanation.
     // Throws on failure — caller catches and sets AiStatus.Failed.
@@ -11,7 +11,7 @@ public interface IClaudeService
         string question, string optionA, string optionB);
 }
 
-public class ClaudeService(IConfiguration config) : IClaudeService
+public class OpenAiService(IConfiguration config) : IOpenAiService
 {
     public async Task<(int chosenIndex, string explanation)> GetOpinionAsync(
         string question, string optionA, string optionB)
