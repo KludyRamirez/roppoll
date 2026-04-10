@@ -39,7 +39,7 @@ public class ClaudeService(IConfiguration config) : IClaudeService
         return Parse(text);
     }
 
-    private static (int chosenIndex, string explanation) Parse(string text)
+    internal static (int chosenIndex, string explanation) Parse(string text)
     {
         var lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 

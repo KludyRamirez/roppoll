@@ -5,7 +5,7 @@
 Full-stack social polling app. Users post two-option polls, others vote, and when the timer expires an AI gives its opinion. The final screen shows Human results vs AI opinion in real time.
 
 - **Frontend:** React + TypeScript (Vite), port 5173
-- **Backend:** ASP.NET Web API (.NET 10), port 5153
+- **Backend:** ASP.NET Web API (.NET 10), port 5001
 - **Database:** PostgreSQL 17
 
 ---
@@ -51,7 +51,10 @@ npm run lint
 # 2. Type check
 npx tsc --noEmit
 
-# 3. Build (catches any remaining errors)
+# 3. Unit tests
+npm test
+
+# 4. Build (catches any remaining errors)
 npm run build
 ```
 
@@ -62,19 +65,29 @@ cd backend
 # 1. Type check + build
 dotnet build
 
-# 2. Manual API test (curl or the test script below)
-curl -s http://localhost:5153/api/polls
+# 2. Unit tests (run from tests/ directory)
+cd ../tests && dotnet test
+```
+
+### E2E tests (requires both servers running)
+```bash
+cd frontend
+npm run test:e2e        # headless
+npm run test:e2e:ui     # with Playwright UI
 ```
 
 ### Push
-Only push when lint, type check, and build all pass cleanly.
+Only push when lint, type check, tests, and build all pass cleanly.
 ```bash
 git add <files>
 git commit -m "description"
 git push
 ```
 
-CI runs automatically on push (`.github/workflows/ci.yml`) — backend build + frontend tsc + vite build in parallel.
+CI runs automatically on push (`.github/workflows/ci.yml`):
+- **backend** job: build + unit tests (`tests/`)
+- **frontend** job: type-check + lint + unit tests + build
+- **e2e** job: spins up Postgres, starts both servers, runs Playwright (runs after unit tests pass)
 
 ---
 
@@ -147,7 +160,14 @@ roppoll/
 │       ├── PollFeedPage.tsx          # Main feed (nav + poll list + SignalR)
 │       └── CreatePollPage.tsx        # Create poll form
 │
-├── .github/workflows/ci.yml          # CI: backend build + frontend tsc + vite build
+├── tests/
+│   ├── RopPoll.Tests.csproj
+│   └── Services/ClaudeServiceTests.cs  # xUnit: ClaudeService.Parse() — 10 cases
+│
+├── frontend/e2e/
+│   └── poll-flow.spec.ts               # Playwright: auth + create poll + vote — 11 cases
+│
+├── .github/workflows/ci.yml            # CI: backend unit + frontend unit + E2E
 ├── ARCHITECTURE.md                   # Full system design explanation
 └── CLAUDE.md                         # This file
 ```

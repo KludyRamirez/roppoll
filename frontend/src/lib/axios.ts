@@ -3,7 +3,7 @@ import { Mutex } from "async-mutex";
 
 // Create a dedicated Axios instance (don't pollute the global axios)
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "http://localhost:5001/api",
   withCredentials: true, // CRITICAL: sends cookies (refresh token) with every request
 });
 
@@ -58,7 +58,9 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/auth/refresh")
+      !originalRequest.url?.includes("/auth/refresh") &&
+      !originalRequest.url?.includes("/auth/login") &&
+      !originalRequest.url?.includes("/auth/register")
     ) {
       originalRequest._retry = true;
 
@@ -67,7 +69,7 @@ api.interceptors.response.use(
       try {
         // Try to get a new access token using the refresh token (in cookie)
         const { data } = await axios.post(
-          "http://localhost:5000/api/auth/refresh",
+          "http://localhost:5001/api/auth/refresh",
           {},
           { withCredentials: true }
         );

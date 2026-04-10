@@ -39,6 +39,7 @@ public class PollExpiryService(
                 .ThenInclude(o => o.Votes)
             .Include(p => p.Votes)
             .Where(p => p.Status == PollStatus.Active && p.ExpiresAt <= now)
+            .AsSplitQuery()
             .ToListAsync();
 
         if (expiredPolls.Count == 0) return;

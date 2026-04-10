@@ -15,7 +15,7 @@ namespace RopPoll.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(AppDbContext db, IConfiguration config, IEmailService emailService) : ControllerBase
+public class AuthController(AppDbContext db, IConfiguration config, IEmailService emailService, IWebHostEnvironment env) : ControllerBase
 {
     // ========================
     // POST /api/auth/register
@@ -132,13 +132,8 @@ public class AuthController(AppDbContext db, IConfiguration config, IEmailServic
             }
         }
 
-        // Clear the cookie
-        Response.Cookies.Delete("refreshToken", new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None
-        });
+        // Clear the cookie — must use the same Secure/SameSite as when it was set
+        Response.Cookies.Delete("refreshToken", RefreshCookieOptions());
 
         return Ok(new { message = "Logged out" });
     }
@@ -255,22 +250,32 @@ public class AuthController(AppDbContext db, IConfiguration config, IEmailServic
         db.RefreshTokens.Add(refreshToken);
         await db.SaveChangesAsync();
 
-        // Set the refresh token as an HttpOnly cookie
-        // HttpOnly = JS can't read it (prevents XSS theft)
-        // Secure = only sent over HTTPS
-        // SameSite=None = allows cross-origin requests (needed for separate frontend)
-        Response.Cookies.Append("refreshToken", refreshTokenValue, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None,
-            Expires = refreshToken.ExpiresAt
-        });
+        // Set the refresh token as an HttpOnly cookie.
+        // In production: Secure=true + SameSite=None (cross-origin HTTPS).
+        // In development: Secure=false + SameSite=Lax (localhost HTTP is fine;
+        //   browsers treat all localhost ports as same-site).
+        Response.Cookies.Append("refreshToken", refreshTokenValue, RefreshCookieOptions(refreshToken.ExpiresAt));
 
         return new AuthResponse
         {
             AccessToken = accessToken,
             User = new UserDto { Id = user.Id, Email = user.Email }
         };
+    }
+
+    // ========================
+    // Helper: Environment-aware refresh cookie options
+    // ========================
+    private CookieOptions RefreshCookieOptions(DateTimeOffset? expires = null)
+    {
+        var isDev = env.IsDevelopment();
+        var opts = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = !isDev,
+            SameSite = isDev ? SameSiteMode.Lax : SameSiteMode.None,
+        };
+        if (expires.HasValue) opts.Expires = expires;
+        return opts;
     }
 }

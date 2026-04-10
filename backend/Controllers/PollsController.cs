@@ -69,6 +69,7 @@ public class PollsController(AppDbContext db) : ControllerBase
             .OrderByDescending(p => p.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .AsSplitQuery()
             .ToListAsync();
 
         return Ok(polls.Select(p => MapToResponse(p, callerId)).ToList());
@@ -104,6 +105,7 @@ public class PollsController(AppDbContext db) : ControllerBase
             .Include(p => p.Options)
                 .ThenInclude(o => o.Votes)
             .Include(p => p.Votes)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(p => p.Id == id);
 
         if (poll is null)
@@ -162,6 +164,7 @@ public class PollsController(AppDbContext db) : ControllerBase
             .Include(p => p.Options)
                 .ThenInclude(o => o.Votes)
             .Include(p => p.Votes)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(p => p.Id == pollId);
 
         if (poll is null) return null;
