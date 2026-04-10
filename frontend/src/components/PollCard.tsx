@@ -266,14 +266,14 @@ export default function PollCard({ poll }: Props) {
               {/* AI still thinking */}
               {poll.aiStatus === "Pending" && (
                 <p style={{ fontSize: 13, color: "#888", marginBottom: 14 }}>
-                  🤖 Waiting for Claude's opinion...
+                  🤖 Waiting for AI's opinion...
                 </p>
               )}
 
               {/* AI failed */}
               {poll.aiStatus === "Failed" && (
                 <p style={{ fontSize: 13, color: "#c0392b", marginBottom: 14 }}>
-                  ⚠ Claude couldn't give an opinion on this one.
+                  ⚠ AI couldn't give an opinion on this one.
                 </p>
               )}
 
@@ -321,7 +321,7 @@ export default function PollCard({ poll }: Props) {
                     }}
                   >
                     <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 13 }}>
-                      🤖 Claude's take
+                      🤖 AI's take
                     </p>
                     <p style={{ margin: "0 0 6px", fontSize: 14, fontWeight: 600 }}>
                       Picked:{" "}

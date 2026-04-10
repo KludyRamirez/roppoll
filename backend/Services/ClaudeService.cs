@@ -1,6 +1,5 @@
-using Anthropic.SDK;
-using Anthropic.SDK.Constants;
-using Anthropic.SDK.Messaging;
+using OpenAI;
+using OpenAI.Chat;
 
 namespace RopPoll.Api.Services;
 
@@ -17,10 +16,11 @@ public class ClaudeService(IConfiguration config) : IClaudeService
     public async Task<(int chosenIndex, string explanation)> GetOpinionAsync(
         string question, string optionA, string optionB)
     {
-        var apiKey = config["Claude:ApiKey"]
-            ?? throw new InvalidOperationException("Claude:ApiKey is not configured.");
+        var apiKey = config["OpenAI:ApiKey"]
+            ?? throw new InvalidOperationException("OpenAI:ApiKey is not configured.");
 
-        var client = new AnthropicClient(apiKey);
+        var client = new OpenAIClient(apiKey);
+        var chat = client.GetChatClient("gpt-4o-mini");
 
         var prompt =
             $"""
@@ -34,23 +34,13 @@ public class ClaudeService(IConfiguration config) : IClaudeService
             Option B: {optionB}
             """;
 
-        var parameters = new MessageParameters
-        {
-            Model = AnthropicModels.Claude45Haiku,
-            MaxTokens = 100,
-            Messages = [new Message(RoleType.User, prompt)]
-        };
-
-        var response = await client.Messages.GetClaudeMessageAsync(parameters);
-        var text = response.Message.ToString()?.Trim() ?? "";
+        var response = await chat.CompleteChatAsync([new UserChatMessage(prompt)]);
+        var text = response.Value.Content[0].Text.Trim();
         return Parse(text);
     }
 
     private static (int chosenIndex, string explanation) Parse(string text)
     {
-        // Expected format:
-        //   CHOICE: A
-        //   REASON: Dogs are loyal companions that offer unconditional love.
         var lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         var choiceLine = lines.FirstOrDefault(l => l.StartsWith("CHOICE:", StringComparison.OrdinalIgnoreCase));
