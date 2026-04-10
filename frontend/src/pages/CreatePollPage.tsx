@@ -10,7 +10,7 @@ export default function CreatePollPage() {
   const [question, setQuestion] = useState("");
   const [optionA, setOptionA] = useState("");
   const [optionB, setOptionB] = useState("");
-  const [durationSeconds, setDurationSeconds] = useState(300); // default: 5 min
+  const [durationSeconds, setDurationSeconds] = useState(300);
   const [validationError, setValidationError] = useState("");
 
   const handleSubmit = (e: { preventDefault(): void }) => {
@@ -24,31 +24,20 @@ export default function CreatePollPage() {
 
     createPoll.mutate(
       { question, optionA, optionB, durationSeconds },
-      {
-        onSuccess: () => {
-          navigate("/");
-        },
-      },
+      { onSuccess: () => navigate("/") },
     );
   };
 
   return (
     <div style={{ maxWidth: 560, margin: "60px auto", padding: "0 20px" }}>
-      <h1>Create a Poll</h1>
-      <p style={{ color: "gray", marginBottom: 24 }}>
-        Post a question with two options. When the timer expires, Claude will
-        give its opinion.
+      <h1 style={{ fontSize: 26, marginBottom: 6 }}>Create a Poll</h1>
+      <p style={{ color: "var(--text-muted)", marginBottom: 28, fontSize: 14 }}>
+        Post a question with two options. When the timer expires, AI will give its opinion.
       </p>
 
       <form onSubmit={handleSubmit}>
-        {/* Question */}
         <div style={{ marginBottom: 20 }}>
-          <label
-            htmlFor="question"
-            style={{ display: "block", marginBottom: 6, fontWeight: 600 }}
-          >
-            Question
-          </label>
+          <label htmlFor="question">Question</label>
           <textarea
             id="question"
             value={question}
@@ -58,25 +47,12 @@ export default function CreatePollPage() {
             maxLength={300}
             rows={3}
             placeholder="e.g. Is it better to work remote or in-office?"
-            style={{
-              display: "block",
-              width: "100%",
-              padding: 10,
-              fontSize: 15,
-              resize: "vertical",
-            }}
           />
-          <small style={{ color: "gray" }}>{question.length}/300</small>
+          <small style={{ color: "var(--text-muted)", fontSize: 12 }}>{question.length}/300</small>
         </div>
 
-        {/* Option A */}
         <div style={{ marginBottom: 16 }}>
-          <label
-            htmlFor="optionA"
-            style={{ display: "block", marginBottom: 6, fontWeight: 600 }}
-          >
-            Option A
-          </label>
+          <label htmlFor="optionA">Option A</label>
           <input
             id="optionA"
             type="text"
@@ -85,23 +61,11 @@ export default function CreatePollPage() {
             required
             maxLength={100}
             placeholder="e.g. Remote"
-            style={{
-              display: "block",
-              width: "100%",
-              padding: 10,
-              fontSize: 15,
-            }}
           />
         </div>
 
-        {/* Option B */}
         <div style={{ marginBottom: 20 }}>
-          <label
-            htmlFor="optionB"
-            style={{ display: "block", marginBottom: 6, fontWeight: 600 }}
-          >
-            Option B
-          </label>
+          <label htmlFor="optionB">Option B</label>
           <input
             id="optionB"
             type="text"
@@ -110,33 +74,15 @@ export default function CreatePollPage() {
             required
             maxLength={100}
             placeholder="e.g. In-office"
-            style={{
-              display: "block",
-              width: "100%",
-              padding: 10,
-              fontSize: 15,
-            }}
           />
         </div>
 
-        {/* Duration */}
-        <div style={{ marginBottom: 24 }}>
-          <label
-            htmlFor="duration"
-            style={{ display: "block", marginBottom: 6, fontWeight: 600 }}
-          >
-            Timer Duration
-          </label>
+        <div style={{ marginBottom: 28 }}>
+          <label htmlFor="duration">Timer Duration</label>
           <select
             id="duration"
             value={durationSeconds}
             onChange={(e) => setDurationSeconds(Number(e.target.value))}
-            style={{
-              display: "block",
-              width: "100%",
-              padding: 10,
-              fontSize: 15,
-            }}
           >
             {DURATION_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -147,20 +93,31 @@ export default function CreatePollPage() {
         </div>
 
         {validationError && (
-          <p style={{ color: "red", marginBottom: 12 }}>{validationError}</p>
+          <p style={{ color: "var(--red)", marginBottom: 12, fontSize: 14 }}>{validationError}</p>
         )}
 
         {createPoll.isError && (
-          <p style={{ color: "red", marginBottom: 12 }}>
-            {(createPoll.error as any)?.response?.data?.message ||
-              "Failed to create poll."}
+          <p style={{ color: "var(--red)", marginBottom: 12, fontSize: 14 }}>
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {(createPoll.error as any)?.response?.data?.message || "Failed to create poll."}
           </p>
         )}
 
         <button
           type="submit"
           disabled={createPoll.isPending}
-          style={{ padding: "10px 28px", fontSize: 15, cursor: "pointer" }}
+          style={{
+            padding: "11px 32px",
+            borderRadius: 7,
+            border: "none",
+            background: "var(--green)",
+            color: "#fff",
+            fontWeight: 600,
+            fontSize: 15,
+            cursor: createPoll.isPending ? "not-allowed" : "pointer",
+            opacity: createPoll.isPending ? 0.7 : 1,
+            fontFamily: "var(--sans)",
+          }}
         >
           {createPoll.isPending ? "Creating..." : "Create Poll"}
         </button>

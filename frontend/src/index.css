@@ -1,111 +1,122 @@
+/* ── Theme variables ──────────────────────────────────────── */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --bg:              #f4f5f7;
+  --bg-card:         #ffffff;
+  --bg-muted:        #f9f9f9;
+  --bg-option:       #f0f0f0;
+  --bg-option-voted: #e6f4ea;
+  --bg-option-ai:    #f3eeff;
+  --bg-ai-panel:     #f9f4ff;
+  --bg-bar:          #e4e4e4;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --text:            #111827;
+  --text-secondary:  #555555;
+  --text-muted:      #888888;
+  --text-body:       #444444;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --border:          #e0e0e0;
+  --border-subtle:   #f0f0f0;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --green:           #1a7a32;
+  --green-bg:        #e6f4ea;
+  --purple:          #7b4faf;
+  --purple-bg:       #f3eeff;
+  --red:             #c0392b;
+  --orange:          #e65100;
+  --orange-bg:       #fff3e0;
+
+  --sans: 'Roboto', system-ui, sans-serif;
+
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+[data-theme="dark"] {
+  --bg:              #0f1117;
+  --bg-card:         #1a1b23;
+  --bg-muted:        #22232e;
+  --bg-option:       #2a2b36;
+  --bg-option-voted: #1c3527;
+  --bg-option-ai:    #261d3a;
+  --bg-ai-panel:     #231a35;
+  --bg-bar:          #2e2f3a;
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+  --text:            #f1f5f9;
+  --text-secondary:  #94a3b8;
+  --text-muted:      #64748b;
+  --text-body:       #cbd5e1;
+
+  --border:          #2e303a;
+  --border-subtle:   #22232e;
+
+  --green:           #4ade80;
+  --green-bg:        #1c3527;
+  --purple:          #a78bfa;
+  --purple-bg:       #261d3a;
+  --red:             #f87171;
+  --orange:          #fb923c;
+  --orange-bg:       #2d1a0e;
+
+  color-scheme: dark;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+/* ── Base ─────────────────────────────────────────────────── */
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.2s, color 0.2s;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+h1, h2, h3 {
+  color: var(--text);
+  margin: 0 0 16px;
+  font-weight: 600;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+a {
+  color: var(--green);
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
+
 p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+/* ── Form elements ────────────────────────────────────────── */
+input, textarea, select {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  font-family: var(--sans);
+  font-size: 14px;
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  margin-top: 6px;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 15%, transparent);
+}
+
+textarea {
+  resize: vertical;
+}
+
+label {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text);
 }

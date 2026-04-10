@@ -7,14 +7,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const user = useAuthStore((s) => s.user);
-
-  // useLogin() returns a TanStack mutation object with:
-  // - mutate/mutateAsync: trigger the mutation
-  // - isPending: true while the request is in flight
-  // - isError/error: error state
   const login = useLogin();
 
-  // If already logged in, redirect to feed
   if (user) return <Navigate to="/" replace />;
 
   const handleSubmit = (e: { preventDefault(): void }) => {
@@ -23,10 +17,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "100px auto", padding: 20 }}>
-      <h1>Login</h1>
+    <div style={{ maxWidth: 400, margin: "100px auto", padding: "0 20px" }}>
+      <h1 style={{ fontSize: 28, marginBottom: 24 }}>Login</h1>
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: 16 }}>
           <label htmlFor="email">Email</label>
           <input
             id="email"
@@ -34,10 +28,9 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ display: "block", width: "100%", padding: 8, marginTop: 4 }}
           />
         </div>
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: 16 }}>
           <label htmlFor="password">Password</label>
           <input
             id="password"
@@ -45,13 +38,12 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ display: "block", width: "100%", padding: 8, marginTop: 4 }}
           />
         </div>
 
-        {/* Show error message from the API */}
         {login.isError && (
-          <p style={{ color: "red" }}>
+          <p style={{ color: "var(--red)", marginBottom: 12, fontSize: 14 }}>
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {(login.error as any)?.response?.data?.message || "Login failed"}
           </p>
         )}
@@ -59,15 +51,28 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={login.isPending}
-          style={{ padding: "8px 24px" }}
+          style={{
+            width: "100%",
+            padding: "11px 0",
+            marginTop: 4,
+            borderRadius: 7,
+            border: "none",
+            background: "var(--green)",
+            color: "#fff",
+            fontWeight: 600,
+            fontSize: 15,
+            cursor: login.isPending ? "not-allowed" : "pointer",
+            opacity: login.isPending ? 0.7 : 1,
+            fontFamily: "var(--sans)",
+          }}
         >
           {login.isPending ? "Logging in..." : "Login"}
         </button>
       </form>
-      <p style={{ marginTop: 16 }}>
+      <p style={{ marginTop: 16, fontSize: 14, color: "var(--text-secondary)" }}>
         <Link to="/forgot-password">Forgot password?</Link>
       </p>
-      <p style={{ marginTop: 8 }}>
+      <p style={{ marginTop: 8, fontSize: 14, color: "var(--text-secondary)" }}>
         Don't have an account? <Link to="/register">Register</Link>
       </p>
     </div>

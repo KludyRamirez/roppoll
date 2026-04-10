@@ -17,10 +17,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "100px auto", padding: 20 }}>
-      <h1>Register</h1>
+    <div style={{ maxWidth: 400, margin: "100px auto", padding: "0 20px" }}>
+      <h1 style={{ fontSize: 28, marginBottom: 24 }}>Register</h1>
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: 16 }}>
           <label htmlFor="email">Email</label>
           <input
             id="email"
@@ -28,10 +28,9 @@ export default function RegisterPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ display: "block", width: "100%", padding: 8, marginTop: 4 }}
           />
         </div>
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: 16 }}>
           <label htmlFor="password">Password (min 6 characters)</label>
           <input
             id="password"
@@ -40,12 +39,12 @@ export default function RegisterPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={6}
-            style={{ display: "block", width: "100%", padding: 8, marginTop: 4 }}
           />
         </div>
 
         {register.isError && (
-          <p style={{ color: "red" }}>
+          <p style={{ color: "var(--red)", marginBottom: 12, fontSize: 14 }}>
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {(register.error as any)?.response?.data?.message || "Registration failed"}
           </p>
         )}
@@ -53,12 +52,25 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={register.isPending}
-          style={{ padding: "8px 24px" }}
+          style={{
+            width: "100%",
+            padding: "11px 0",
+            marginTop: 4,
+            borderRadius: 7,
+            border: "none",
+            background: "var(--green)",
+            color: "#fff",
+            fontWeight: 600,
+            fontSize: 15,
+            cursor: register.isPending ? "not-allowed" : "pointer",
+            opacity: register.isPending ? 0.7 : 1,
+            fontFamily: "var(--sans)",
+          }}
         >
           {register.isPending ? "Registering..." : "Register"}
         </button>
       </form>
-      <p style={{ marginTop: 16 }}>
+      <p style={{ marginTop: 16, fontSize: 14, color: "var(--text-secondary)" }}>
         Already have an account? <Link to="/login">Login</Link>
       </p>
     </div>

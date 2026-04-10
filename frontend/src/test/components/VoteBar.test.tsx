@@ -1,4 +1,3 @@
-import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 
 // VoteBar is not exported separately — we test it via a minimal inline

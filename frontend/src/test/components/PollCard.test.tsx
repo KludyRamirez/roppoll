@@ -61,6 +61,7 @@ const basePoll: Poll = {
 }
 
 beforeEach(() => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mockUseVote.mockReturnValue({ mutate: vi.fn(), isPending: false, isError: false } as any)
 })
 
@@ -89,7 +90,7 @@ describe('PollCard — collapsed state', () => {
   it('shows creator email', () => {
     mockUseAuthStore.mockReturnValue(null)
     renderCard(basePoll)
-    expect(screen.getByText('by alice@test.com')).toBeInTheDocument()
+    expect(screen.getByText('alice@test.com')).toBeInTheDocument()
   })
 })
 
@@ -98,7 +99,7 @@ describe('PollCard — expanded: guest (not logged in)', () => {
     mockUseAuthStore.mockReturnValue(null)
     renderCard(basePoll)
     await userEvent.click(screen.getByText('Pizza or Burger?'))
-    expect(screen.getByText(/login/i)).toBeInTheDocument()
+    expect(screen.getByText(/log in/i)).toBeInTheDocument()
     expect(screen.getByText(/to vote on this poll/i)).toBeInTheDocument()
   })
 
@@ -121,6 +122,7 @@ describe('PollCard — expanded: logged-in, not voted', () => {
 
   it('calls vote.mutate with the correct optionId', async () => {
     const mutate = vi.fn()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockUseVote.mockReturnValue({ mutate, isPending: false, isError: false } as any)
     mockUseAuthStore.mockReturnValue({ id: 2, email: 'bob@test.com' })
     renderCard(basePoll)
@@ -176,7 +178,7 @@ describe('PollCard — expired + AI Complete', () => {
       ],
     })
     await userEvent.click(screen.getByText('Pizza or Burger?'))
-    expect(screen.getByText('👥 Humans voted')).toBeInTheDocument()
+    expect(screen.getByText('👥 Human votes')).toBeInTheDocument()
     expect(screen.getByText("🤖 AI's take")).toBeInTheDocument()
     expect(screen.getByText(/pizza is universally loved/i)).toBeInTheDocument()
   })
@@ -184,7 +186,7 @@ describe('PollCard — expired + AI Complete', () => {
   it('shows "Expired" badge when poll is expired', () => {
     mockUseAuthStore.mockReturnValue(null)
     renderCard({ ...basePoll, status: 'Expired', expiresAt: past })
-    expect(screen.getByText('Expired')).toBeInTheDocument()
+    expect(screen.getByText('Ended')).toBeInTheDocument()
   })
 })
 
