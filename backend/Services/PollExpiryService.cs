@@ -8,8 +8,9 @@ using RopPoll.Api.Models;
 namespace RopPoll.Api.Services;
 
 // Runs in the background on a 30-second interval.
-// Finds polls that have passed their ExpiresAt time but are still marked Active,
-// flips them to Expired, then broadcasts each one to all connected SignalR clients.
+// 1. Finds Active polls whose ExpiresAt has passed → marks them Expired
+// 2. Calls Claude to get an opinion on each expired poll
+// 3. Broadcasts the final result to all connected SignalR clients
 public class PollExpiryService(
     IServiceScopeFactory scopeFactory,
     IHubContext<PollHub> hubContext,
@@ -17,8 +18,6 @@ public class PollExpiryService(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        // Run once immediately on startup to catch any polls that expired
-        // while the server was down, then tick every 30 seconds.
         while (!stoppingToken.IsCancellationRequested)
         {
             await ExpirePollsAsync();
@@ -28,10 +27,9 @@ public class PollExpiryService(
 
     private async Task ExpirePollsAsync()
     {
-        // BackgroundService is a singleton, but DbContext is scoped.
-        // We must create a new scope to resolve it.
         using var scope = scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var claude = scope.ServiceProvider.GetRequiredService<IClaudeService>();
 
         var now = DateTime.UtcNow;
 
@@ -45,19 +43,42 @@ public class PollExpiryService(
 
         if (expiredPolls.Count == 0) return;
 
+        // Mark all as Expired first
         foreach (var poll in expiredPolls)
             poll.Status = PollStatus.Expired;
 
         await db.SaveChangesAsync();
         logger.LogInformation("Expired {Count} poll(s)", expiredPolls.Count);
 
-        // Broadcast each expired poll to all connected clients.
-        // User-specific fields (IsCreator, HasVoted, VotedOptionId) are omitted
-        // from the broadcast — the frontend preserves them from its local cache.
+        // For each expired poll: ask Claude, save result, broadcast
         foreach (var poll in expiredPolls)
         {
-            var response = MapToPublicResponse(poll);
-            await hubContext.Clients.All.SendAsync("PollUpdated", response);
+            var optionA = poll.Options.First(o => o.DisplayOrder == 0);
+            var optionB = poll.Options.First(o => o.DisplayOrder == 1);
+
+            try
+            {
+                var (chosenIndex, explanation) = await claude.GetOpinionAsync(
+                    poll.Question, optionA.Text, optionB.Text);
+
+                poll.AiChoiceOptionId = chosenIndex == 0 ? optionA.Id : optionB.Id;
+                poll.AiExplanation = explanation;
+                poll.AiStatus = AiStatus.Complete;
+
+                logger.LogInformation(
+                    "Poll {Id}: Claude picked option {Index} — \"{Explanation}\"",
+                    poll.Id, chosenIndex, explanation);
+            }
+            catch (Exception ex)
+            {
+                poll.AiStatus = AiStatus.Failed;
+                logger.LogWarning(ex, "Poll {Id}: Claude opinion failed", poll.Id);
+            }
+
+            await db.SaveChangesAsync();
+
+            // Broadcast final state (Expired + AI result) to all clients
+            await hubContext.Clients.All.SendAsync("PollUpdated", MapToPublicResponse(poll));
         }
     }
 
@@ -72,9 +93,9 @@ public class PollExpiryService(
         AiStatus = poll.AiStatus,
         CreatorId = poll.CreatorId,
         CreatorEmail = poll.Creator.Email,
-        IsCreator = false,       // Unknown at broadcast time
-        HasVoted = false,        // Unknown at broadcast time
-        VotedOptionId = null,    // Unknown at broadcast time
+        IsCreator = false,
+        HasVoted = false,
+        VotedOptionId = null,
         TotalVotes = poll.Votes.Count,
         Options = poll.Options
             .OrderBy(o => o.DisplayOrder)

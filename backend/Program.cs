@@ -16,6 +16,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // --- 1b. Email Service: Gmail SMTP for password reset emails ---
 builder.Services.AddScoped<IEmailService, EmailService>();
 
+// --- 1c. Claude AI: opinion service ---
+builder.Services.AddScoped<IClaudeService, ClaudeService>();
+
 // --- 2. Authentication: Configure JWT Bearer ---
 // This tells ASP.NET how to validate incoming JWT tokens
 var jwtKey = builder.Configuration["Jwt:Key"]!;

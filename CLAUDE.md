@@ -138,6 +138,7 @@ dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Database=rop
 dotnet user-secrets set "Jwt:Key" "<min-32-char-secret>"
 dotnet user-secrets set "Email:SenderEmail" "your@gmail.com"
 dotnet user-secrets set "Email:AppPassword" "your-16-char-app-password"
+dotnet user-secrets set "Claude:ApiKey" "sk-ant-..."
 ```
 
 Non-sensitive config (SMTP server, JWT issuer, token lifetimes) lives in `appsettings.json` and is safe to commit.
