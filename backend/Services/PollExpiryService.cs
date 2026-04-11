@@ -9,7 +9,7 @@ namespace RopPoll.Api.Services;
 
 // Runs in the background on a 30-second interval.
 // 1. Finds Active polls whose ExpiresAt has passed → marks them Expired
-// 2. Calls Claude to get an opinion on each expired poll
+// 2. Calls OpenAI to get an opinion on each expired poll
 // 3. Broadcasts the final result to all connected SignalR clients
 public class PollExpiryService(
     IServiceScopeFactory scopeFactory,
@@ -29,7 +29,7 @@ public class PollExpiryService(
     {
         using var scope = scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var claude = scope.ServiceProvider.GetRequiredService<IOpenAiService>();
+        var openAi = scope.ServiceProvider.GetRequiredService<IOpenAiService>();
 
         var now = DateTime.UtcNow;
 
@@ -51,7 +51,7 @@ public class PollExpiryService(
         await db.SaveChangesAsync();
         logger.LogInformation("Expired {Count} poll(s)", expiredPolls.Count);
 
-        // For each expired poll: ask Claude, save result, broadcast
+        // For each expired poll: ask OpenAI, save result, broadcast
         foreach (var poll in expiredPolls)
         {
             var optionA = poll.Options.First(o => o.DisplayOrder == 0);
@@ -59,7 +59,7 @@ public class PollExpiryService(
 
             try
             {
-                var (chosenIndex, explanation) = await claude.GetOpinionAsync(
+                var (chosenIndex, explanation) = await openAi.GetOpinionAsync(
                     poll.Question, optionA.Text, optionB.Text);
 
                 poll.AiChoiceOptionId = chosenIndex == 0 ? optionA.Id : optionB.Id;
@@ -67,13 +67,13 @@ public class PollExpiryService(
                 poll.AiStatus = AiStatus.Complete;
 
                 logger.LogInformation(
-                    "Poll {Id}: Claude picked option {Index} — \"{Explanation}\"",
+                    "Poll {Id}: AI picked option {Index} — \"{Explanation}\"",
                     poll.Id, chosenIndex, explanation);
             }
             catch (Exception ex)
             {
                 poll.AiStatus = AiStatus.Failed;
-                logger.LogWarning(ex, "Poll {Id}: Claude opinion failed", poll.Id);
+                logger.LogWarning(ex, "Poll {Id}: AI opinion failed", poll.Id);
             }
 
             await db.SaveChangesAsync();

@@ -9,8 +9,8 @@ public enum PollStatus
 public enum AiStatus
 {
     Pending,   // Timer hasn't expired yet
-    Complete,  // Claude gave an opinion
-    Failed     // Claude API call failed
+    Complete,  // AI gave an opinion
+    Failed     // AI API call failed
 }
 
 public class Poll
