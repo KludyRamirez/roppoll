@@ -5,6 +5,7 @@ import { useLogout } from "../hooks/useAuth";
 import { usePollHub } from "../hooks/usePollHub";
 import { useThemeStore } from "../stores/themeStore";
 import PollCard from "../components/PollCard";
+import PollComposer from "../components/PollComposer";
 
 export default function PollFeedPage() {
   const user = useAuthStore((s) => s.user);
@@ -46,21 +47,6 @@ export default function PollFeedPage() {
           {user ? (
             <>
               <small style={{ color: "var(--text-muted)", fontSize: 13 }}>{user.email}</small>
-              <Link to="/polls/new">
-                <button style={{
-                  padding: "7px 16px",
-                  borderRadius: 99,
-                  border: "none",
-                  background: "var(--green)",
-                  color: "#fff",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  fontSize: 13,
-                  fontFamily: "var(--sans)",
-                }}>
-                  + New Poll
-                </button>
-              </Link>
               <button
                 onClick={() => logout.mutate()}
                 style={{
@@ -138,6 +124,9 @@ export default function PollFeedPage() {
             For you
           </div>
         </div>
+
+        {/* Inline composer */}
+        <PollComposer />
 
         {/* Loading */}
         {isLoading && (
