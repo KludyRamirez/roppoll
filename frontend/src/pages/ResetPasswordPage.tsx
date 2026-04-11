@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useResetPassword } from "../hooks/useAuth";
 
+const inputCls = "block w-full mt-1.5 px-3 py-[10px] font-[var(--sans)] text-[14px] bg-[var(--bg-card)] text-[var(--text)] border border-[var(--border)] rounded-[7px] focus:outline-none";
+const labelCls = "font-medium text-[14px] text-[var(--text)]";
+
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -51,12 +54,12 @@ export default function ResetPasswordPage() {
       ) : (
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="password">New Password (min 6 characters)</label>
-            <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+            <label htmlFor="password" className={labelCls}>New Password (min 6 characters)</label>
+            <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className={inputCls} />
           </div>
           <div className="mb-4">
-            <label htmlFor="confirmPassword">Confirm New Password</label>
-            <input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={6} />
+            <label htmlFor="confirmPassword" className={labelCls}>Confirm New Password</label>
+            <input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={6} className={inputCls} />
           </div>
 
           {mismatchError && (

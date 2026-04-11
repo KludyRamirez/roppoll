@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForgotPassword } from "../hooks/useAuth";
 
+const inputCls = "block w-full mt-1.5 px-3 py-[10px] font-[var(--sans)] text-[14px] bg-[var(--bg-card)] text-[var(--text)] border border-[var(--border)] rounded-[7px] focus:outline-none";
+const labelCls = "font-medium text-[14px] text-[var(--text)]";
+
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const forgotPassword = useForgotPassword();
@@ -29,8 +32,8 @@ export default function ForgotPasswordPage() {
             Enter your email address and we'll send you a link to reset your password.
           </p>
           <div className="mb-4">
-            <label htmlFor="email">Email</label>
-            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <label htmlFor="email" className={labelCls}>Email</label>
+            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className={inputCls} />
           </div>
 
           {forgotPassword.isError && (

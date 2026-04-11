@@ -3,6 +3,9 @@ import { Link, Navigate } from "react-router-dom";
 import { useRegister } from "../hooks/useAuth";
 import { useAuthStore } from "../stores/authStore";
 
+const inputCls = "block w-full mt-1.5 px-3 py-[10px] font-[var(--sans)] text-[14px] bg-[var(--bg-card)] text-[var(--text)] border border-[var(--border)] rounded-[7px] focus:outline-none";
+const labelCls = "font-medium text-[14px] text-[var(--text)]";
+
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,12 +24,12 @@ export default function RegisterPage() {
       <h1 className="text-[28px] mb-6">Register</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="email">Email</label>
-          <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <label htmlFor="email" className={labelCls}>Email</label>
+          <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className={inputCls} />
         </div>
         <div className="mb-4">
-          <label htmlFor="password">Password (min 6 characters)</label>
-          <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+          <label htmlFor="password" className={labelCls}>Password (min 6 characters)</label>
+          <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className={inputCls} />
         </div>
 
         {register.isError && (

@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useCreatePoll } from "../hooks/usePolls";
 import { DURATION_OPTIONS } from "../types/poll";
 
+const inputCls = "block w-full mt-1.5 px-3 py-[10px] font-[var(--sans)] text-[14px] bg-[var(--bg-card)] text-[var(--text)] border border-[var(--border)] rounded-[7px] focus:outline-none";
+const labelCls = "font-medium text-[14px] text-[var(--text)]";
+
 export default function CreatePollPage() {
   const navigate = useNavigate();
   const createPoll = useCreatePoll();
@@ -37,7 +40,7 @@ export default function CreatePollPage() {
 
       <form onSubmit={handleSubmit}>
         <div className="mb-5">
-          <label htmlFor="question">Question</label>
+          <label htmlFor="question" className={labelCls}>Question</label>
           <textarea
             id="question"
             value={question}
@@ -47,23 +50,24 @@ export default function CreatePollPage() {
             maxLength={300}
             rows={3}
             placeholder="e.g. Is it better to work remote or in-office?"
+            className={`${inputCls} resize-y`}
           />
           <small className="text-[var(--text-muted)] text-[12px]">{question.length}/300</small>
         </div>
 
         <div className="mb-4">
-          <label htmlFor="optionA">Option A</label>
-          <input id="optionA" type="text" value={optionA} onChange={(e) => setOptionA(e.target.value)} required maxLength={100} placeholder="e.g. Remote" />
+          <label htmlFor="optionA" className={labelCls}>Option A</label>
+          <input id="optionA" type="text" value={optionA} onChange={(e) => setOptionA(e.target.value)} required maxLength={100} placeholder="e.g. Remote" className={inputCls} />
         </div>
 
         <div className="mb-5">
-          <label htmlFor="optionB">Option B</label>
-          <input id="optionB" type="text" value={optionB} onChange={(e) => setOptionB(e.target.value)} required maxLength={100} placeholder="e.g. In-office" />
+          <label htmlFor="optionB" className={labelCls}>Option B</label>
+          <input id="optionB" type="text" value={optionB} onChange={(e) => setOptionB(e.target.value)} required maxLength={100} placeholder="e.g. In-office" className={inputCls} />
         </div>
 
         <div className="mb-7">
-          <label htmlFor="duration">Timer Duration</label>
-          <select id="duration" value={durationSeconds} onChange={(e) => setDurationSeconds(Number(e.target.value))}>
+          <label htmlFor="duration" className={labelCls}>Timer Duration</label>
+          <select id="duration" value={durationSeconds} onChange={(e) => setDurationSeconds(Number(e.target.value))} className={inputCls}>
             {DURATION_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
