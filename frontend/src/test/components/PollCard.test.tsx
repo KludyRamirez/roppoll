@@ -98,7 +98,7 @@ describe('PollCard — expanded: guest (not logged in)', () => {
   it('shows login prompt when expanded', async () => {
     mockUseAuthStore.mockReturnValue(null)
     renderCard(basePoll)
-    await userEvent.click(screen.getByText('Pizza or Burger?'))
+    await userEvent.click(screen.getByRole('button', { name: /more/i }))
     expect(screen.getByText(/log in/i)).toBeInTheDocument()
     expect(screen.getByText(/to vote on this poll/i)).toBeInTheDocument()
   })
@@ -106,7 +106,7 @@ describe('PollCard — expanded: guest (not logged in)', () => {
   it('does not show vote buttons for guests', async () => {
     mockUseAuthStore.mockReturnValue(null)
     renderCard(basePoll)
-    await userEvent.click(screen.getByText('Pizza or Burger?'))
+    await userEvent.click(screen.getByRole('button', { name: /more/i }))
     expect(screen.queryByRole('button', { name: 'Pizza' })).not.toBeInTheDocument()
   })
 })
@@ -115,7 +115,7 @@ describe('PollCard — expanded: logged-in, not voted', () => {
   it('shows vote buttons', async () => {
     mockUseAuthStore.mockReturnValue({ id: 2, email: 'bob@test.com' })
     renderCard(basePoll)
-    await userEvent.click(screen.getByText('Pizza or Burger?'))
+    await userEvent.click(screen.getByRole('button', { name: /more/i }))
     expect(screen.getByRole('button', { name: 'Pizza' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Burger' })).toBeInTheDocument()
   })
@@ -126,7 +126,7 @@ describe('PollCard — expanded: logged-in, not voted', () => {
     mockUseVote.mockReturnValue({ mutate, isPending: false, isError: false } as any)
     mockUseAuthStore.mockReturnValue({ id: 2, email: 'bob@test.com' })
     renderCard(basePoll)
-    await userEvent.click(screen.getByText('Pizza or Burger?'))
+    await userEvent.click(screen.getByRole('button', { name: /more/i }))
     await userEvent.click(screen.getByRole('button', { name: 'Pizza' }))
     expect(mutate).toHaveBeenCalledWith(1) // optionId of Pizza
   })
@@ -136,7 +136,7 @@ describe('PollCard — expanded: creator', () => {
   it('shows "you created this" message instead of vote buttons', async () => {
     mockUseAuthStore.mockReturnValue({ id: 1, email: 'alice@test.com' })
     renderCard({ ...basePoll, isCreator: true })
-    await userEvent.click(screen.getByText('Pizza or Burger?'))
+    await userEvent.click(screen.getByRole('button', { name: /more/i }))
     expect(screen.getByText(/you created this poll/i)).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Pizza' })).not.toBeInTheDocument()
   })
@@ -155,7 +155,7 @@ describe('PollCard — expanded: already voted', () => {
         { id: 2, text: 'Burger', displayOrder: 1, voteCount: 0 },
       ],
     })
-    await userEvent.click(screen.getByText('Pizza or Burger?'))
+    await userEvent.click(screen.getByRole('button', { name: /more/i }))
     expect(screen.getByText(/you voted for/i)).toBeInTheDocument()
     expect(screen.getAllByText('Pizza').length).toBeGreaterThan(0)
   })
@@ -177,7 +177,7 @@ describe('PollCard — expired + AI Complete', () => {
         { id: 2, text: 'Burger', displayOrder: 1, voteCount: 1 },
       ],
     })
-    await userEvent.click(screen.getByText('Pizza or Burger?'))
+    await userEvent.click(screen.getByRole('button', { name: /more/i }))
     expect(screen.getByText('👥 Human votes')).toBeInTheDocument()
     expect(screen.getByText("🤖 AI's take")).toBeInTheDocument()
     expect(screen.getByText(/pizza is universally loved/i)).toBeInTheDocument()
@@ -194,7 +194,7 @@ describe('PollCard — expired + AI Pending', () => {
   it('shows waiting message', async () => {
     mockUseAuthStore.mockReturnValue(null)
     renderCard({ ...basePoll, status: 'Expired', expiresAt: past, aiStatus: 'Pending' })
-    await userEvent.click(screen.getByText('Pizza or Burger?'))
+    await userEvent.click(screen.getByRole('button', { name: /more/i }))
     expect(screen.getByText(/waiting for ai/i)).toBeInTheDocument()
   })
 })
@@ -203,7 +203,7 @@ describe('PollCard — expired + AI Failed', () => {
   it('shows error message', async () => {
     mockUseAuthStore.mockReturnValue(null)
     renderCard({ ...basePoll, status: 'Expired', expiresAt: past, aiStatus: 'Failed' })
-    await userEvent.click(screen.getByText('Pizza or Burger?'))
+    await userEvent.click(screen.getByRole('button', { name: /more/i }))
     expect(screen.getByText(/ai couldn't give an opinion/i)).toBeInTheDocument()
   })
 })
