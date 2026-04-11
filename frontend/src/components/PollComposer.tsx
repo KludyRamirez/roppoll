@@ -4,21 +4,6 @@ import { useCreatePoll } from "../hooks/usePolls";
 import { useAuthStore } from "../stores/authStore";
 import { DURATION_OPTIONS } from "../types/poll";
 
-const pillInput: React.CSSProperties = {
-  flex: 1,
-  width: "auto",
-  marginTop: 0,
-  padding: "9px 14px",
-  borderRadius: 99,
-  border: "1.5px solid var(--border)",
-  background: "var(--bg-option)",
-  color: "var(--text)",
-  fontSize: 14,
-  fontFamily: "var(--sans)",
-  outline: "none",
-  display: "block",
-};
-
 export default function PollComposer() {
   const user = useAuthStore((s) => s.user);
   const createPoll = useCreatePoll();
@@ -65,19 +50,10 @@ export default function PollComposer() {
   /* ── Not logged in ── */
   if (!user) {
     return (
-      <div style={{
-        padding: "16px 20px",
-        borderBottom: "1px solid var(--border)",
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-      }}>
-        <div style={{
-          width: 42, height: 42, borderRadius: "50%",
-          background: "var(--bg-option)", flexShrink: 0,
-        }} />
-        <span style={{ fontSize: 15, color: "var(--text-muted)" }}>
-          <Link to="/login" style={{ color: "var(--green)", fontWeight: 600, textDecoration: "none" }}>
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-[var(--border)]">
+        <div className="w-[42px] h-[42px] rounded-full bg-[var(--bg-option)] shrink-0" />
+        <span className="text-[15px] text-[var(--text-muted)]">
+          <Link to="/login" className="text-[var(--green)] font-semibold no-underline">
             Log in
           </Link>{" "}
           to post a poll
@@ -87,48 +63,30 @@ export default function PollComposer() {
   }
 
   return (
-    <div style={{
-      padding: "16px 20px",
-      borderBottom: "1px solid var(--border)",
-    }}>
-      <div style={{ display: "flex", gap: 12 }}>
+    <div className="px-5 py-4 border-b border-[var(--border)]">
+      <div className="flex gap-3">
 
         {/* Avatar */}
-        <div style={{
-          width: 42, height: 42, borderRadius: "50%",
-          background: "var(--green-bg)", color: "var(--green)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontWeight: 700, fontSize: 17, flexShrink: 0,
-          userSelect: "none",
-        }}>
+        <div className="w-[42px] h-[42px] rounded-full bg-[var(--green-bg)] text-[var(--green)] flex items-center justify-center font-bold text-[17px] shrink-0 select-none">
           {username[0]?.toUpperCase()}
         </div>
 
         {/* Compose area */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="flex-1 min-w-0">
 
-          {/* Collapsed: placeholder tap target */}
+          {/* Collapsed */}
           {!expanded && (
             <div
               onClick={expand}
-              style={{
-                padding: "11px 0",
-                fontSize: 18,
-                color: "var(--text-muted)",
-                cursor: "text",
-                borderBottom: "1px solid var(--border-subtle)",
-                userSelect: "none",
-              }}
+              className="py-[11px] text-[18px] text-[var(--text-muted)] cursor-text select-none"
             >
               Ask a question...
             </div>
           )}
 
-          {/* Expanded: full form */}
+          {/* Expanded */}
           {expanded && (
             <form onSubmit={handleSubmit}>
-
-              {/* Question textarea — transparent, borderless */}
               <textarea
                 ref={textareaRef}
                 value={question}
@@ -138,28 +96,10 @@ export default function PollComposer() {
                 minLength={5}
                 maxLength={300}
                 rows={3}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  marginTop: 0,
-                  background: "transparent",
-                  border: "none",
-                  borderBottom: "1px solid var(--border)",
-                  borderRadius: 0,
-                  outline: "none",
-                  fontSize: 18,
-                  color: "var(--text)",
-                  fontFamily: "var(--sans)",
-                  lineHeight: 1.5,
-                  resize: "none",
-                  padding: "4px 0 12px",
-                  marginBottom: 14,
-                  caretColor: "var(--green)",
-                }}
+                className="block w-full mt-0 bg-transparent border-0 border-b border-[var(--border)] rounded-none outline-none text-[18px] text-[var(--text)] font-[var(--sans)] leading-relaxed resize-none px-0 pb-3 mb-4 caret-[var(--green)] focus:ring-0 focus:shadow-none placeholder:text-[var(--text-muted)]"
               />
 
-              {/* Option pills */}
-              <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
+              <div className="flex gap-2.5 mb-3.5">
                 <input
                   type="text"
                   value={optionA}
@@ -167,7 +107,7 @@ export default function PollComposer() {
                   placeholder="Option A"
                   required
                   maxLength={100}
-                  style={pillInput}
+                  className="flex-1 w-auto mt-0 px-[14px] py-[9px] rounded-full border-[1.5px] border-[var(--border)] bg-[var(--bg-option)] text-[var(--text)] text-[14px] outline-none focus:ring-0 focus:shadow-none"
                 />
                 <input
                   type="text"
@@ -176,75 +116,33 @@ export default function PollComposer() {
                   placeholder="Option B"
                   required
                   maxLength={100}
-                  style={pillInput}
+                  className="flex-1 w-auto mt-0 px-[14px] py-[9px] rounded-full border-[1.5px] border-[var(--border)] bg-[var(--bg-option)] text-[var(--text)] text-[14px] outline-none focus:ring-0 focus:shadow-none"
                 />
               </div>
 
-              {/* Footer row: duration + actions */}
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 10,
-                flexWrap: "wrap",
-              }}>
+              <div className="flex items-center justify-between gap-2.5 flex-wrap">
                 <select
                   value={durationSeconds}
                   onChange={(e) => setDurationSeconds(Number(e.target.value))}
-                  style={{
-                    width: "auto",
-                    marginTop: 0,
-                    padding: "7px 14px",
-                    borderRadius: 99,
-                    border: "1.5px solid var(--border)",
-                    background: "var(--bg-option)",
-                    color: "var(--text)",
-                    fontSize: 13,
-                    fontFamily: "var(--sans)",
-                    cursor: "pointer",
-                  }}
+                  className="w-auto mt-0 px-[14px] py-[7px] rounded-full border-[1.5px] border-[var(--border)] bg-[var(--bg-option)] text-[var(--text)] text-[13px] cursor-pointer outline-none focus:ring-0 focus:shadow-none"
                 >
                   {DURATION_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
                   ))}
                 </select>
 
-                <div style={{ display: "flex", gap: 8 }}>
+                <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={cancel}
-                    style={{
-                      padding: "8px 18px",
-                      borderRadius: 99,
-                      border: "1.5px solid var(--border)",
-                      background: "transparent",
-                      color: "var(--text-secondary)",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      cursor: "pointer",
-                      fontFamily: "var(--sans)",
-                    }}
+                    className="px-[18px] py-2 rounded-full border-[1.5px] border-[var(--border)] bg-transparent text-[var(--text-secondary)] font-semibold text-[14px] cursor-pointer font-[var(--sans)]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={createPoll.isPending || !canPost}
-                    style={{
-                      padding: "8px 20px",
-                      borderRadius: 99,
-                      border: "none",
-                      background: "var(--green)",
-                      color: "#fff",
-                      fontWeight: 700,
-                      fontSize: 14,
-                      cursor: createPoll.isPending || !canPost ? "not-allowed" : "pointer",
-                      opacity: createPoll.isPending || !canPost ? 0.6 : 1,
-                      fontFamily: "var(--sans)",
-                      transition: "opacity 0.15s",
-                    }}
+                    className="px-5 py-2 rounded-full border-0 bg-[var(--green)] text-white font-bold text-[14px] font-[var(--sans)] transition-opacity disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {createPoll.isPending ? "Posting..." : "Post"}
                   </button>
@@ -252,13 +150,11 @@ export default function PollComposer() {
               </div>
 
               {validationError && (
-                <p style={{ color: "var(--red)", fontSize: 13, marginTop: 10 }}>
-                  {validationError}
-                </p>
+                <p className="text-[var(--red)] text-[13px] mt-2.5">{validationError}</p>
               )}
 
               {createPoll.isError && (
-                <p style={{ color: "var(--red)", fontSize: 13, marginTop: 10 }}>
+                <p className="text-[var(--red)] text-[13px] mt-2.5">
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {(createPoll.error as any)?.response?.data?.message || "Failed to create poll."}
                 </p>

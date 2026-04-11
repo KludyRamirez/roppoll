@@ -17,32 +17,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "100px auto", padding: "0 20px" }}>
-      <h1 style={{ fontSize: 28, marginBottom: 24 }}>Login</h1>
+    <div className="max-w-[400px] mx-auto mt-[100px] px-5">
+      <h1 className="text-[28px] mb-6">Login</h1>
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 16 }}>
+        <div className="mb-4">
           <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
-        <div style={{ marginBottom: 16 }}>
+        <div className="mb-4">
           <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
 
         {login.isError && (
-          <p style={{ color: "var(--red)", marginBottom: 12, fontSize: 14 }}>
+          <p className="text-[var(--red)] mb-3 text-[14px]">
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {(login.error as any)?.response?.data?.message || "Login failed"}
           </p>
@@ -51,28 +39,15 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={login.isPending}
-          style={{
-            width: "100%",
-            padding: "11px 0",
-            marginTop: 4,
-            borderRadius: 7,
-            border: "none",
-            background: "var(--green)",
-            color: "#fff",
-            fontWeight: 600,
-            fontSize: 15,
-            cursor: login.isPending ? "not-allowed" : "pointer",
-            opacity: login.isPending ? 0.7 : 1,
-            fontFamily: "var(--sans)",
-          }}
+          className="w-full py-[11px] mt-1 rounded-[7px] border-0 bg-[var(--green)] text-white font-semibold text-[15px] font-[var(--sans)] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
         >
           {login.isPending ? "Logging in..." : "Login"}
         </button>
       </form>
-      <p style={{ marginTop: 16, fontSize: 14, color: "var(--text-secondary)" }}>
+      <p className="mt-4 text-[14px] text-[var(--text-secondary)]">
         <Link to="/forgot-password">Forgot password?</Link>
       </p>
-      <p style={{ marginTop: 8, fontSize: 14, color: "var(--text-secondary)" }}>
+      <p className="mt-2 text-[14px] text-[var(--text-secondary)]">
         Don't have an account? <Link to="/register">Register</Link>
       </p>
     </div>

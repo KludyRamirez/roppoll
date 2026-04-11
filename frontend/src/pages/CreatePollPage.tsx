@@ -29,14 +29,14 @@ export default function CreatePollPage() {
   };
 
   return (
-    <div style={{ maxWidth: 560, margin: "60px auto", padding: "0 20px" }}>
-      <h1 style={{ fontSize: 26, marginBottom: 6 }}>Create a Poll</h1>
-      <p style={{ color: "var(--text-muted)", marginBottom: 28, fontSize: 14 }}>
+    <div className="max-w-[560px] mx-auto mt-[60px] px-5">
+      <h1 className="text-[26px] mb-1.5">Create a Poll</h1>
+      <p className="text-[var(--text-muted)] mb-7 text-[14px]">
         Post a question with two options. When the timer expires, AI will give its opinion.
       </p>
 
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 20 }}>
+        <div className="mb-5">
           <label htmlFor="question">Question</label>
           <textarea
             id="question"
@@ -48,56 +48,34 @@ export default function CreatePollPage() {
             rows={3}
             placeholder="e.g. Is it better to work remote or in-office?"
           />
-          <small style={{ color: "var(--text-muted)", fontSize: 12 }}>{question.length}/300</small>
+          <small className="text-[var(--text-muted)] text-[12px]">{question.length}/300</small>
         </div>
 
-        <div style={{ marginBottom: 16 }}>
+        <div className="mb-4">
           <label htmlFor="optionA">Option A</label>
-          <input
-            id="optionA"
-            type="text"
-            value={optionA}
-            onChange={(e) => setOptionA(e.target.value)}
-            required
-            maxLength={100}
-            placeholder="e.g. Remote"
-          />
+          <input id="optionA" type="text" value={optionA} onChange={(e) => setOptionA(e.target.value)} required maxLength={100} placeholder="e.g. Remote" />
         </div>
 
-        <div style={{ marginBottom: 20 }}>
+        <div className="mb-5">
           <label htmlFor="optionB">Option B</label>
-          <input
-            id="optionB"
-            type="text"
-            value={optionB}
-            onChange={(e) => setOptionB(e.target.value)}
-            required
-            maxLength={100}
-            placeholder="e.g. In-office"
-          />
+          <input id="optionB" type="text" value={optionB} onChange={(e) => setOptionB(e.target.value)} required maxLength={100} placeholder="e.g. In-office" />
         </div>
 
-        <div style={{ marginBottom: 28 }}>
+        <div className="mb-7">
           <label htmlFor="duration">Timer Duration</label>
-          <select
-            id="duration"
-            value={durationSeconds}
-            onChange={(e) => setDurationSeconds(Number(e.target.value))}
-          >
+          <select id="duration" value={durationSeconds} onChange={(e) => setDurationSeconds(Number(e.target.value))}>
             {DURATION_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
         </div>
 
         {validationError && (
-          <p style={{ color: "var(--red)", marginBottom: 12, fontSize: 14 }}>{validationError}</p>
+          <p className="text-[var(--red)] mb-3 text-[14px]">{validationError}</p>
         )}
 
         {createPoll.isError && (
-          <p style={{ color: "var(--red)", marginBottom: 12, fontSize: 14 }}>
+          <p className="text-[var(--red)] mb-3 text-[14px]">
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {(createPoll.error as any)?.response?.data?.message || "Failed to create poll."}
           </p>
@@ -106,18 +84,7 @@ export default function CreatePollPage() {
         <button
           type="submit"
           disabled={createPoll.isPending}
-          style={{
-            padding: "11px 32px",
-            borderRadius: 7,
-            border: "none",
-            background: "var(--green)",
-            color: "#fff",
-            fontWeight: 600,
-            fontSize: 15,
-            cursor: createPoll.isPending ? "not-allowed" : "pointer",
-            opacity: createPoll.isPending ? 0.7 : 1,
-            fontFamily: "var(--sans)",
-          }}
+          className="px-8 py-[11px] rounded-[7px] border-0 bg-[var(--green)] text-white font-semibold text-[15px] font-[var(--sans)] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
         >
           {createPoll.isPending ? "Creating..." : "Create Poll"}
         </button>

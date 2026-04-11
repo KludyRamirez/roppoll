@@ -12,12 +12,12 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "100px auto", padding: "0 20px" }}>
-      <h1 style={{ fontSize: 28, marginBottom: 24 }}>Forgot Password</h1>
+    <div className="max-w-[400px] mx-auto mt-[100px] px-5">
+      <h1 className="text-[28px] mb-6">Forgot Password</h1>
 
       {forgotPassword.isSuccess ? (
         <div>
-          <p style={{ color: "var(--green)", fontSize: 14, marginBottom: 16 }}>
+          <p className="text-[var(--green)] text-[14px] mb-4">
             If an account with that email exists, we've sent a password reset
             link. Check your inbox (and spam folder).
           </p>
@@ -25,22 +25,16 @@ export default function ForgotPasswordPage() {
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
-          <p style={{ color: "var(--text-muted)", marginBottom: 20, fontSize: 14 }}>
+          <p className="text-[var(--text-muted)] mb-5 text-[14px]">
             Enter your email address and we'll send you a link to reset your password.
           </p>
-          <div style={{ marginBottom: 16 }}>
+          <div className="mb-4">
             <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
 
           {forgotPassword.isError && (
-            <p style={{ color: "var(--red)", marginBottom: 12, fontSize: 14 }}>
+            <p className="text-[var(--red)] mb-3 text-[14px]">
               Something went wrong. Please try again.
             </p>
           )}
@@ -48,25 +42,12 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={forgotPassword.isPending}
-            style={{
-              width: "100%",
-              padding: "11px 0",
-              marginTop: 4,
-              borderRadius: 7,
-              border: "none",
-              background: "var(--green)",
-              color: "#fff",
-              fontWeight: 600,
-              fontSize: 15,
-              cursor: forgotPassword.isPending ? "not-allowed" : "pointer",
-              opacity: forgotPassword.isPending ? 0.7 : 1,
-              fontFamily: "var(--sans)",
-            }}
+            className="w-full py-[11px] mt-1 rounded-[7px] border-0 bg-[var(--green)] text-white font-semibold text-[15px] font-[var(--sans)] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
           >
             {forgotPassword.isPending ? "Sending..." : "Send Reset Link"}
           </button>
 
-          <p style={{ marginTop: 16, fontSize: 14 }}>
+          <p className="mt-4 text-[14px]">
             <Link to="/login">Back to Login</Link>
           </p>
         </form>

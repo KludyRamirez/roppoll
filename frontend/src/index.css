@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* ── Theme variables ──────────────────────────────────────── */
 :root {
   --bg:              #f4f5f7;
@@ -12,7 +14,6 @@
   --text:            #111827;
   --text-secondary:  #555555;
   --text-muted:      #888888;
-  --text-body:       #444444;
 
   --border:          #e0e0e0;
   --border-subtle:   #f0f0f0;
@@ -43,7 +44,6 @@
   --text:            #f1f5f9;
   --text-secondary:  #94a3b8;
   --text-muted:      #64748b;
-  --text-body:       #cbd5e1;
 
   --border:          #2e303a;
   --border-subtle:   #22232e;
@@ -60,35 +60,16 @@
 }
 
 /* ── Base ─────────────────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
 body {
-  margin: 0;
   font-family: var(--sans);
-  background: var(--bg);
+  background-color: var(--bg);
   color: var(--text);
-  font-size: 15px;
-  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background 0.2s, color 0.2s;
 }
 
-h1, h2, h3 {
-  color: var(--text);
-  margin: 0 0 16px;
-  font-weight: 600;
-}
-
-a {
-  color: var(--green);
-}
-
-p {
-  margin: 0;
-}
+a { color: var(--green); }
 
 /* ── Form elements ────────────────────────────────────────── */
 input, textarea, select {
@@ -111,9 +92,7 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 15%, transparent);
 }
 
-textarea {
-  resize: vertical;
-}
+textarea { resize: vertical; }
 
 label {
   font-weight: 500;

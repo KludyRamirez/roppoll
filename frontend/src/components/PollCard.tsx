@@ -33,38 +33,28 @@ function useCountdown(expiresAt: string, isExpired: boolean) {
   return label;
 }
 
-function VoteBar({
-  text, votes, total, isChosen, isAiChoice,
-}: {
+function VoteBar({ text, votes, total, isChosen, isAiChoice }: {
   text: string; votes: number; total: number; isChosen: boolean; isAiChoice: boolean;
 }) {
   const pct = total > 0 ? Math.round((votes / total) * 100) : 0;
 
   return (
-    <div style={{ marginBottom: 10 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-        <span style={{
-          fontSize: 13, fontWeight: isChosen ? 600 : 400,
-          color: isChosen ? "var(--green)" : isAiChoice ? "var(--purple)" : "var(--text)",
-          display: "flex", alignItems: "center", gap: 5,
-        }}>
-          {isChosen && <span style={{ fontSize: 11 }}>✓</span>}
-          {isAiChoice && <span style={{ fontSize: 12 }}>🤖</span>}
+    <div className="mb-2.5">
+      <div className="flex justify-between items-center mb-[5px]">
+        <span className={`text-[13px] flex items-center gap-1.5 ${isChosen ? "font-semibold text-[var(--green)]" : isAiChoice ? "font-normal text-[var(--purple)]" : "font-normal text-[var(--text)]"}`}>
+          {isChosen && <span className="text-[11px]">✓</span>}
+          {isAiChoice && <span className="text-[12px]">🤖</span>}
           {text}
         </span>
-        <span style={{
-          fontSize: 12, fontWeight: 600,
-          color: isChosen ? "var(--green)" : isAiChoice ? "var(--purple)" : "var(--text-muted)",
-        }}>
+        <span className={`text-[12px] font-semibold ${isChosen ? "text-[var(--green)]" : isAiChoice ? "text-[var(--purple)]" : "text-[var(--text-muted)]"}`}>
           {pct}%
         </span>
       </div>
-      <div style={{ background: "var(--bg-bar)", borderRadius: 99, height: 5, overflow: "hidden" }}>
-        <div style={{
-          width: `${pct}%`, height: "100%",
-          background: isChosen ? "var(--green)" : isAiChoice ? "var(--purple)" : "var(--text-muted)",
-          borderRadius: 99, transition: "width 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-        }} />
+      <div className="bg-[var(--bg-bar)] rounded-full h-[5px] overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isChosen ? "bg-[var(--green)]" : isAiChoice ? "bg-[var(--purple)]" : "bg-[var(--text-muted)]"}`}
+          style={{ width: `${pct}%` }}
+        />
       </div>
     </div>
   );
@@ -101,111 +91,77 @@ export default function PollCard({ poll }: Props) {
   const username = poll.creatorEmail.split("@")[0];
 
   return (
-    <article style={{
-      borderBottom: "1px solid var(--border)",
-      padding: "16px 20px",
-      display: "flex",
-      gap: 12,
-      background: "var(--bg-card)",
-    }}>
+    <article className="border-b border-[var(--border)] px-5 py-4 flex gap-3 bg-[var(--bg-card)]">
 
-      {/* ── Avatar ── */}
-      <div style={{
-        width: 42, height: 42, borderRadius: "50%",
-        background: "var(--green-bg)", color: "var(--green)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontWeight: 700, fontSize: 17, flexShrink: 0,
-        userSelect: "none",
-      }}>
+      {/* Avatar */}
+      <div className="w-[42px] h-[42px] rounded-full bg-[var(--green-bg)] text-[var(--green)] flex items-center justify-center font-bold text-[17px] shrink-0 select-none">
         {username[0].toUpperCase()}
       </div>
 
-      {/* ── Content column ── */}
-      <div style={{ flex: 1, minWidth: 0 }}>
+      {/* Content */}
+      <div className="flex-1 min-w-0">
 
-        {/* Header: username · email · status badge */}
-        <div style={{
-          display: "flex", alignItems: "baseline",
-          gap: 6, flexWrap: "wrap", marginBottom: 4,
-        }}>
-          <span style={{ fontWeight: 700, fontSize: 15, color: "var(--text)" }}>
-            {username}
-          </span>
-          <span style={{ fontSize: 14, color: "var(--text-muted)" }}>
-            {poll.creatorEmail}
-          </span>
-          <span style={{ color: "var(--text-muted)", fontSize: 14 }}>·</span>
-          <span style={{
-            fontSize: 11, fontWeight: 700, letterSpacing: "0.4px", textTransform: "uppercase",
-            padding: "2px 8px", borderRadius: 99,
-            background: isExpired ? "var(--bg-option)" : "var(--green-bg)",
-            color: isExpired ? "var(--text-muted)" : "var(--green)",
-          }}>
+        {/* Header */}
+        <div className="flex items-baseline gap-1.5 flex-wrap mb-1">
+          <span className="font-bold text-[15px] text-[var(--text)]">{username}</span>
+          <span className="text-[14px] text-[var(--text-muted)]">{poll.creatorEmail}</span>
+          <span className="text-[14px] text-[var(--text-muted)]">·</span>
+          <span className={`text-[11px] font-bold tracking-[0.4px] uppercase px-2 py-[2px] rounded-full ${isExpired ? "bg-[var(--bg-option)] text-[var(--text-muted)]" : "bg-[var(--green-bg)] text-[var(--green)]"}`}>
             {isExpired ? "Ended" : countdown}
           </span>
         </div>
 
         {/* Question */}
-        <p style={{
-          margin: "0 0 14px", fontSize: 15, lineHeight: 1.55,
-          color: "var(--text)", fontWeight: 400,
-        }}>
+        <p className="text-[15px] leading-[1.55] text-[var(--text)] font-normal mb-3.5">
           {poll.question}
         </p>
 
         {/* Option pills */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+        <div className="flex gap-2 mb-3.5">
           {poll.options.map((opt) => {
             const isVoted = poll.votedOptionId === opt.id;
             const isAi = poll.aiChoiceOptionId === opt.id && isExpired;
             return (
-              <span key={opt.id} style={{
-                flex: 1, padding: "7px 12px", borderRadius: 99,
-                fontSize: 13, fontWeight: isVoted ? 600 : 500,
-                textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                color: isVoted ? "var(--green)" : isAi ? "var(--purple)" : "var(--text-secondary)",
-                background: isVoted ? "var(--bg-option-voted)" : isAi ? "var(--bg-option-ai)" : "var(--bg-option)",
-                border: isVoted ? "1.5px solid var(--green)" : isAi ? "1.5px solid var(--purple)" : "1.5px solid transparent",
-                transition: "all 0.15s ease",
-              }}>
+              <span
+                key={opt.id}
+                className={`flex-1 px-3 py-[7px] rounded-full text-[13px] text-center overflow-hidden text-ellipsis whitespace-nowrap transition-all duration-150 border-[1.5px] ${
+                  isVoted
+                    ? "font-semibold text-[var(--green)] bg-[var(--bg-option-voted)] border-[var(--green)]"
+                    : isAi
+                    ? "font-medium text-[var(--purple)] bg-[var(--bg-option-ai)] border-[var(--purple)]"
+                    : "font-medium text-[var(--text-secondary)] bg-[var(--bg-option)] border-transparent"
+                }`}
+              >
                 {opt.text}
               </span>
             );
           })}
         </div>
 
-        {/* Footer: vote count + expand toggle */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
+        {/* Footer */}
+        <div className="flex items-center gap-5">
+          <span className="text-[13px] text-[var(--text-muted)]">
             {totalVotes} {totalVotes === 1 ? "vote" : "votes"}
           </span>
           <button
             onClick={() => setExpanded((v) => !v)}
-            style={{
-              background: "none", border: "none", padding: 0,
-              color: "var(--text-muted)", fontSize: 13, cursor: "pointer",
-              fontFamily: "var(--sans)", display: "flex", alignItems: "center",
-              gap: 4, fontWeight: 500,
-            }}
+            className="bg-transparent border-0 p-0 text-[var(--text-muted)] text-[13px] cursor-pointer font-[var(--sans)] flex items-center gap-1 font-medium"
           >
             {expanded ? "Less" : "More"}
-            <span style={{ fontSize: 10 }}>{expanded ? "▲" : "▼"}</span>
+            <span className="text-[10px]">{expanded ? "▲" : "▼"}</span>
           </button>
         </div>
 
-        {/* ── Expanded body ── */}
+        {/* Expanded body */}
         {expanded && (
-          <div style={{ marginTop: 18 }}>
+          <div className="mt-[18px]">
 
-            {/* ── ACTIVE ── */}
+            {/* ACTIVE */}
             {!isExpired && (
               <div>
                 {!user && (
-                  <div style={{
-                    textAlign: "center", padding: "14px 0 20px",
-                    color: "var(--text-muted)", fontSize: 14,
-                  }}>
-                    <Link to="/login" style={{ color: "var(--green)", fontWeight: 600, textDecoration: "none" }}>
+                  <div className="text-center py-3.5 pb-5 text-[var(--text-muted)] text-[14px]">
+                    <Link to="/login" className="text-[var(--green)] font-semibold no-underline">
                       Log in
                     </Link>{" "}
                     to vote on this poll
@@ -213,40 +169,19 @@ export default function PollCard({ poll }: Props) {
                 )}
 
                 {user && poll.isCreator && (
-                  <p style={{
-                    fontSize: 13, color: "var(--text-muted)", marginBottom: 20,
-                    padding: "10px 14px", background: "var(--bg-option)", borderRadius: 10,
-                  }}>
+                  <p className="text-[13px] text-[var(--text-muted)] mb-5 px-3.5 py-2.5 bg-[var(--bg-option)] rounded-[10px]">
                     You created this poll — you can't vote on it.
                   </p>
                 )}
 
                 {user && !poll.isCreator && !poll.hasVoted && (
-                  <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+                  <div className="flex gap-2.5 mb-5">
                     {poll.options.map((opt) => (
                       <button
                         key={opt.id}
                         onClick={() => handleVote(opt.id)}
                         disabled={vote.isPending}
-                        style={{
-                          flex: 1, padding: "11px 0", borderRadius: 99,
-                          border: "1.5px solid var(--green)", background: "transparent",
-                          color: "var(--green)", fontWeight: 600, fontSize: 14,
-                          cursor: vote.isPending ? "not-allowed" : "pointer",
-                          opacity: vote.isPending ? 0.5 : 1,
-                          fontFamily: "var(--sans)",
-                          transition: "background 0.15s, color 0.15s",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (!vote.isPending) {
-                            (e.target as HTMLButtonElement).style.background = "var(--green)";
-                            (e.target as HTMLButtonElement).style.color = "#fff";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.target as HTMLButtonElement).style.background = "transparent";
-                          (e.target as HTMLButtonElement).style.color = "var(--green)";
-                        }}
+                        className="flex-1 py-[11px] rounded-full border-[1.5px] border-[var(--green)] bg-transparent text-[var(--green)] font-semibold text-[14px] font-[var(--sans)] transition-[background,color] duration-150 hover:bg-[var(--green)] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                       >
                         {opt.text}
                       </button>
@@ -255,13 +190,9 @@ export default function PollCard({ poll }: Props) {
                 )}
 
                 {user && poll.hasVoted && (
-                  <div style={{
-                    display: "flex", alignItems: "center", gap: 8, marginBottom: 20,
-                    padding: "10px 14px", background: "var(--green-bg)",
-                    borderRadius: 10, border: "1px solid var(--green)",
-                  }}>
-                    <span style={{ fontSize: 15 }}>✓</span>
-                    <span style={{ fontSize: 13, color: "var(--green)", fontWeight: 500 }}>
+                  <div className="flex items-center gap-2 mb-5 px-3.5 py-2.5 bg-[var(--green-bg)] rounded-[10px] border border-[var(--green)]">
+                    <span className="text-[15px]">✓</span>
+                    <span className="text-[13px] text-[var(--green)] font-medium">
                       You voted for{" "}
                       <strong>{poll.options.find((o) => o.id === poll.votedOptionId)?.text}</strong>
                     </span>
@@ -274,53 +205,37 @@ export default function PollCard({ poll }: Props) {
                     isChosen={poll.votedOptionId === opt.id} isAiChoice={false}
                   />
                 ))}
-
-                <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                <span className="text-[12px] text-[var(--text-muted)]">
                   {totalVotes} total {totalVotes === 1 ? "vote" : "votes"}
                 </span>
               </div>
             )}
 
-            {/* ── EXPIRED ── */}
+            {/* EXPIRED */}
             {isExpired && (
               <div>
                 {poll.aiStatus === "Pending" && (
-                  <div style={{
-                    display: "flex", alignItems: "center", gap: 10,
-                    padding: "12px 14px", background: "var(--bg-option)", borderRadius: 10,
-                    marginBottom: 20, fontSize: 13, color: "var(--text-muted)",
-                  }}>
+                  <div className="flex items-center gap-2.5 px-3.5 py-3 bg-[var(--bg-option)] rounded-[10px] mb-5 text-[13px] text-[var(--text-muted)]">
                     <span>🤖</span>
                     <span>Waiting for AI's opinion…</span>
                   </div>
                 )}
 
                 {poll.aiStatus === "Failed" && (
-                  <div style={{
-                    padding: "12px 14px", background: "var(--bg-option)", borderRadius: 10,
-                    marginBottom: 20, fontSize: 13, color: "var(--red)",
-                  }}>
+                  <div className="px-3.5 py-3 bg-[var(--bg-option)] rounded-[10px] mb-5 text-[13px] text-[var(--red)]">
                     ⚠ AI couldn't give an opinion on this one.
                   </div>
                 )}
 
                 {poll.aiStatus === "Complete" && (
-                  <div style={{ marginBottom: 20 }}>
-                    <p style={{
-                      margin: "0 0 12px", fontSize: 11, fontWeight: 700,
-                      letterSpacing: "0.6px", textTransform: "uppercase", color: "var(--text-muted)",
-                    }}>
+                  <div className="mb-5">
+                    <p className="text-[11px] font-bold tracking-[0.6px] uppercase text-[var(--text-muted)] mb-3">
                       Results
                     </p>
 
-                    <div style={{
-                      background: "var(--bg-muted)", borderRadius: 12,
-                      padding: "14px 16px", marginBottom: 12,
-                    }}>
-                      <p style={{
-                        margin: "0 0 12px", fontSize: 12, fontWeight: 700,
-                        color: "var(--text-secondary)", letterSpacing: "0.2px",
-                      }}>
+                    {/* Human votes */}
+                    <div className="bg-[var(--bg-muted)] rounded-xl px-4 py-3.5 mb-3">
+                      <p className="text-[12px] font-bold text-[var(--text-secondary)] tracking-[0.2px] mb-3">
                         👥 Human votes
                       </p>
                       {poll.options.map((opt) => (
@@ -329,36 +244,23 @@ export default function PollCard({ poll }: Props) {
                           isChosen={poll.votedOptionId === opt.id} isAiChoice={false}
                         />
                       ))}
-                      <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                      <span className="text-[12px] text-[var(--text-muted)]">
                         {totalVotes} total {totalVotes === 1 ? "vote" : "votes"}
                       </span>
                     </div>
 
-                    <div style={{
-                      borderRadius: 12, padding: "14px 16px",
-                      background: "var(--bg-ai-panel)", borderLeft: "3px solid var(--purple)",
-                    }}>
-                      <p style={{
-                        margin: "0 0 10px", fontSize: 12, fontWeight: 700,
-                        color: "var(--purple)", letterSpacing: "0.2px",
-                      }}>
+                    {/* AI opinion */}
+                    <div className="rounded-xl px-4 py-3.5 bg-[var(--bg-ai-panel)] border-l-[3px] border-[var(--purple)]">
+                      <p className="text-[12px] font-bold text-[var(--purple)] tracking-[0.2px] mb-2.5">
                         🤖 AI's take
                       </p>
-                      <p style={{ margin: "0 0 6px", fontSize: 14, fontWeight: 600, color: "var(--text)" }}>
+                      <p className="text-[14px] font-semibold text-[var(--text)] mb-1.5">
                         {poll.options[aiOptionIndex]?.text ?? "—"}
                       </p>
-                      <p style={{
-                        margin: "0 0 12px", fontSize: 13, color: "var(--text-secondary)",
-                        lineHeight: 1.6, fontStyle: "italic",
-                      }}>
+                      <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed italic mb-3">
                         "{poll.aiExplanation}"
                       </p>
-                      <span style={{
-                        display: "inline-block", fontSize: 11, fontWeight: 700,
-                        letterSpacing: "0.2px", padding: "4px 10px", borderRadius: 99,
-                        background: aiAgreesWithMajority ? "var(--green-bg)" : "var(--orange-bg)",
-                        color: aiAgreesWithMajority ? "var(--green)" : "var(--orange)",
-                      }}>
+                      <span className={`inline-block text-[11px] font-bold tracking-[0.2px] px-2.5 py-1 rounded-full ${aiAgreesWithMajority ? "bg-[var(--green-bg)] text-[var(--green)]" : "bg-[var(--orange-bg)] text-[var(--orange)]"}`}>
                         {aiAgreesWithMajority
                           ? `✅ Agrees with humans · ${majorityOption ? Math.round((majorityOption.voteCount / totalVotes) * 100) : 0}%`
                           : "⚡ Disagrees with humans"}
@@ -375,7 +277,7 @@ export default function PollCard({ poll }: Props) {
                         isChosen={poll.votedOptionId === opt.id} isAiChoice={false}
                       />
                     ))}
-                    <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                    <span className="text-[12px] text-[var(--text-muted)]">
                       {totalVotes} total {totalVotes === 1 ? "vote" : "votes"}
                     </span>
                   </div>
@@ -384,7 +286,7 @@ export default function PollCard({ poll }: Props) {
             )}
 
             {vote.isError && (
-              <p style={{ color: "var(--red)", fontSize: 13, marginTop: 12 }}>
+              <p className="text-[var(--red)] text-[13px] mt-3">
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {(vote.error as any)?.response?.data?.message ?? "Failed to vote."}
               </p>
