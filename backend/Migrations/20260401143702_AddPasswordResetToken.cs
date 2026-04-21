@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace RopPoll.Api.Migrations
+namespace Propl.Api.Migrations
 {
     /// <inheritdoc />
     public partial class AddPasswordResetToken : Migration

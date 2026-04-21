@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace RopPoll.Api.Dtos;
+namespace Propl.Api.Dtos;
 
 // Request DTOs — what the client sends to us
 

@@ -80,9 +80,9 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_USER: roppoll_user
-          POSTGRES_PASSWORD: roppoll_secret
-          POSTGRES_DB: roppoll
+          POSTGRES_USER: propl_user
+          POSTGRES_PASSWORD: propl_secret
+          POSTGRES_DB: propl
         ports: ["5432:5432"]
         options: >-
           --health-cmd pg_isready
@@ -117,14 +117,14 @@ jobs:
         run: dotnet ef database update
         working-directory: backend
         env:
-          ConnectionStrings__Default: "Host=localhost;Database=roppoll;Username=roppoll_user;Password=roppoll_secret"
+          ConnectionStrings__Default: "Host=localhost;Database=propl;Username=propl_user;Password=propl_secret"
 
       - name: Start backend
         run: dotnet run --urls "http://localhost:5001" &
         working-directory: backend
         env:
           ASPNETCORE_ENVIRONMENT: Development
-          ConnectionStrings__Default: "Host=localhost;Database=roppoll;Username=roppoll_user;Password=roppoll_secret"
+          ConnectionStrings__Default: "Host=localhost;Database=propl;Username=propl_user;Password=propl_secret"
           Jwt__Key: "ci-test-jwt-secret-key-at-least-32-chars!"
 
       - name: Wait for backend

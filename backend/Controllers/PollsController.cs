@@ -2,11 +2,11 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RopPoll.Api.Data;
-using RopPoll.Api.Dtos;
-using RopPoll.Api.Models;
+using Propl.Api.Data;
+using Propl.Api.Dtos;
+using Propl.Api.Models;
 
-namespace RopPoll.Api.Controllers;
+namespace Propl.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

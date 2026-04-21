@@ -1,4 +1,4 @@
-# RopPoll — CLAUDE.md
+# Propl — CLAUDE.md
 
 ## Project Overview
 
@@ -117,7 +117,7 @@ CI runs automatically on push (`.github/workflows/ci.yml`):
 ## Project Structure
 
 ```
-roppoll/
+propl/
 ├── backend/
 │   ├── Controllers/
 │   │   ├── AuthController.cs         # Auth endpoints (register, login, refresh, etc.)
@@ -161,7 +161,7 @@ roppoll/
 │       └── CreatePollPage.tsx        # Create poll form
 │
 ├── tests/
-│   ├── RopPoll.Tests.csproj
+│   ├── Propl.Tests.csproj
 │   └── Services/OpenAiServiceTests.cs  # xUnit: OpenAiService.Parse() — 10 cases
 │
 ├── frontend/e2e/
@@ -214,7 +214,7 @@ roppoll/
 cd backend && dotnet user-secrets list
 
 # Update connection string
-dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Database=roppoll;Username=roppoll_user;Password=roppoll_secret"
+dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Database=propl;Username=propl_user;Password=propl_secret"
 ```
 
 **Migrations:**
@@ -234,7 +234,7 @@ All sensitive values are stored in `~/.microsoft/usersecrets/`. To configure:
 
 ```bash
 cd backend
-dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Database=roppoll;Username=roppoll_user;Password=roppoll_secret"
+dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Database=propl;Username=propl_user;Password=propl_secret"
 dotnet user-secrets set "Jwt:Key" "<min-32-char-secret>"
 dotnet user-secrets set "Email:SenderEmail" "your@gmail.com"
 dotnet user-secrets set "Email:AppPassword" "your-16-char-app-password"

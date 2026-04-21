@@ -1,4 +1,4 @@
-# RopPoll Authentication Architecture
+# Propl Authentication Architecture
 
 A complete guide to how the authentication system works end-to-end, from database to browser.
 
@@ -227,8 +227,8 @@ var claims = new[]
 };
 
 var token = new JwtSecurityToken(
-    issuer: "RopPoll",           // Who issued this token
-    audience: "RopPoll",         // Who is it intended for
+    issuer: "Propl",           // Who issued this token
+    audience: "Propl",         // Who is it intended for
     claims: claims,              // The data inside the token
     expires: DateTime.UtcNow.AddMinutes(15),  // When it expires
     signingCredentials: credentials            // How it's signed
@@ -777,7 +777,7 @@ The email service uses Gmail's SMTP server to send password reset emails. To use
 ```json
 "Email": {
   "SenderEmail": "your-email@gmail.com",
-  "SenderName": "RopPoll",
+  "SenderName": "Propl",
   "SmtpServer": "smtp.gmail.com",
   "SmtpPort": 587,
   "AppPassword": "your-16-char-app-password"
@@ -907,7 +907,7 @@ Token rotation ensures that a stolen refresh token has a very limited useful lif
 ## Project Structure
 
 ```
-roppoll/
+propl/
 │
 ├── backend/                              # ASP.NET Web API
 │   ├── Controllers/
@@ -932,7 +932,7 @@ roppoll/
 │   │
 │   ├── Program.cs                        # App configuration (DB, JWT, CORS, email, middleware)
 │   ├── appsettings.json                  # Connection string, JWT secret, Gmail SMTP config
-│   └── RopPoll.Api.csproj               # NuGet packages
+│   └── Propl.Api.csproj               # NuGet packages
 │
 ├── frontend/                             # React + Vite + TypeScript
 │   └── src/

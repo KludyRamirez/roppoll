@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>RopPoll.Tests</_Parameter1>
+      <_Parameter1>Propl.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 

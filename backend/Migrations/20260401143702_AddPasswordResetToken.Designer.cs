@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using RopPoll.Api.Data;
+using Propl.Api.Data;
 
 #nullable disable
 
-namespace RopPoll.Api.Migrations
+namespace Propl.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260401143702_AddPasswordResetToken")]
@@ -25,7 +25,7 @@ namespace RopPoll.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("RopPoll.Api.Models.PasswordResetToken", b =>
+            modelBuilder.Entity("Propl.Api.Models.PasswordResetToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,7 @@ namespace RopPoll.Api.Migrations
                     b.ToTable("PasswordResetTokens");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.RefreshToken", b =>
+            modelBuilder.Entity("Propl.Api.Models.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,7 +91,7 @@ namespace RopPoll.Api.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.User", b =>
+            modelBuilder.Entity("Propl.Api.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -118,9 +118,9 @@ namespace RopPoll.Api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.PasswordResetToken", b =>
+            modelBuilder.Entity("Propl.Api.Models.PasswordResetToken", b =>
                 {
-                    b.HasOne("RopPoll.Api.Models.User", "User")
+                    b.HasOne("Propl.Api.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -129,9 +129,9 @@ namespace RopPoll.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.RefreshToken", b =>
+            modelBuilder.Entity("Propl.Api.Models.RefreshToken", b =>
                 {
-                    b.HasOne("RopPoll.Api.Models.User", "User")
+                    b.HasOne("Propl.Api.Models.User", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -140,7 +140,7 @@ namespace RopPoll.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.User", b =>
+            modelBuilder.Entity("Propl.Api.Models.User", b =>
                 {
                     b.Navigation("RefreshTokens");
                 });

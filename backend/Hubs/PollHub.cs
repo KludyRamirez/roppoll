@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 
-namespace RopPoll.Api.Hubs;
+namespace Propl.Api.Hubs;
 
 // A minimal hub — clients connect here to receive real-time poll updates.
 // No methods need to be defined because the server pushes to clients,

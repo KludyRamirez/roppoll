@@ -1,4 +1,4 @@
-# How ChatGPT and SignalR Work in RopPoll
+# How ChatGPT and SignalR Work in Propl
 
 ---
 
@@ -136,7 +136,7 @@ Without SignalR, a user would have to manually refresh the page to see that a po
 
 SignalR is a library that gives you a **persistent connection** between the browser and the server. Under the hood it uses WebSockets (with fallbacks to long-polling if WebSockets aren't available). Once the connection is open, either side can send messages to the other at any time.
 
-In RopPoll, only the **server sends** — clients just listen.
+In Propl, only the **server sends** — clients just listen.
 
 ---
 

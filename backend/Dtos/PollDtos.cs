@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using RopPoll.Api.Models;
+using Propl.Api.Models;
 
-namespace RopPoll.Api.Dtos;
+namespace Propl.Api.Dtos;
 
 // ─── Request DTOs ───────────────────────────────────────────
 

@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using RopPoll.Api.Data;
-using RopPoll.Api.Hubs;
-using RopPoll.Api.Services;
+using Propl.Api.Data;
+using Propl.Api.Hubs;
+using Propl.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

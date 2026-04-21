@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Mail;
 
-namespace RopPoll.Api.Services;
+namespace Propl.Api.Services;
 
 // Interface — allows us to swap implementations (e.g., mock for testing)
 public interface IEmailService
@@ -26,7 +26,7 @@ public class EmailService(IConfiguration config) : IEmailService
         var message = new MailMessage
         {
             From = new MailAddress(senderEmail, senderName),
-            Subject = "Reset Your Password — RopPoll",
+            Subject = "Reset Your Password — Propl",
             IsBodyHtml = true,
             Body = $"""
                 <h2>Password Reset Request</h2>
@@ -35,7 +35,7 @@ public class EmailService(IConfiguration config) : IEmailService
                 <p>This link expires in <strong>1 hour</strong>.</p>
                 <p>If you didn't request this, you can safely ignore this email.</p>
                 <br/>
-                <p style="color: gray; font-size: 12px;">— RopPoll</p>
+                <p style="color: gray; font-size: 12px;">— Propl</p>
                 """
         };
         message.To.Add(toEmail);

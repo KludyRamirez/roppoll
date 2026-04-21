@@ -1,6 +1,6 @@
-using RopPoll.Api.Services;
+using Propl.Api.Services;
 
-namespace RopPoll.Tests.Services;
+namespace Propl.Tests.Services;
 
 public class OpenAiServiceTests
 {

@@ -1,4 +1,4 @@
-namespace RopPoll.Api.Models;
+namespace Propl.Api.Models;
 
 public class RefreshToken
 {

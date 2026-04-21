@@ -9,7 +9,7 @@ const s = {
   pollQuestion: '',
 }
 
-test.describe('RopPoll', () => {
+test.describe('Propl', () => {
   test.beforeAll(async ({ request }) => {
     s.suffix = Date.now()
     s.aliceEmail = `alice.e2e.${s.suffix}@test.com`
@@ -72,17 +72,15 @@ test.describe('RopPoll', () => {
     await page.getByRole('button', { name: 'Login' }).click()
     await expect(page).toHaveURL('/', { timeout: 10_000 })
 
-    await page.getByRole('button', { name: '+ New Poll' }).click()
-    await expect(page).toHaveURL('/polls/new')
+    // Expand the inline composer
+    await page.getByText('Ask a question...').click()
 
-    await page.getByLabel('Question').fill(s.pollQuestion)
-    await page.getByLabel('Option A').fill('Cats')
-    await page.getByLabel('Option B').fill('Dogs')
-    await page.getByLabel('Timer Duration').selectOption({ value: '60' })
-    await page.getByRole('button', { name: 'Create Poll' }).click()
+    await page.getByPlaceholder('Ask a question...').fill(s.pollQuestion)
+    await page.getByPlaceholder('Option A').fill('Cats')
+    await page.getByPlaceholder('Option B').fill('Dogs')
+    await page.getByRole('button', { name: 'Post' }).click()
 
-    await expect(page).toHaveURL('/', { timeout: 10_000 })
-    await expect(page.getByText(s.pollQuestion)).toBeVisible()
+    await expect(page.getByText(s.pollQuestion)).toBeVisible({ timeout: 10_000 })
   })
 
   // ─── Voting ─────────────────────────────────────────────────

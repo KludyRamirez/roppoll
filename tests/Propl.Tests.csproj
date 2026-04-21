@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\backend\RopPoll.Api.csproj" />
+    <ProjectReference Include="..\backend\Propl.Api.csproj" />
   </ItemGroup>
 
 </Project>

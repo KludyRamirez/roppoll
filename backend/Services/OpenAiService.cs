@@ -1,7 +1,7 @@
 using OpenAI;
 using OpenAI.Chat;
 
-namespace RopPoll.Api.Services;
+namespace Propl.Api.Services;
 
 public interface IOpenAiService
 {

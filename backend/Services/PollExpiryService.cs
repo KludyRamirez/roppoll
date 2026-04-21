@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using RopPoll.Api.Data;
-using RopPoll.Api.Dtos;
-using RopPoll.Api.Hubs;
-using RopPoll.Api.Models;
+using Propl.Api.Data;
+using Propl.Api.Dtos;
+using Propl.Api.Hubs;
+using Propl.Api.Models;
 
-namespace RopPoll.Api.Services;
+namespace Propl.Api.Services;
 
 // Runs in the background on a 30-second interval.
 // 1. Finds Active polls whose ExpiresAt has passed → marks them Expired

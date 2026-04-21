@@ -80,7 +80,7 @@ export default function PollComposer() {
           {!expanded && (
             <div
               onClick={expand}
-              className="py-[11px] text-[18px] text-[var(--text-muted)] cursor-text select-none"
+              className="py-[11px] text-[16px] text-[var(--text-muted)] cursor-text select-none"
             >
               Ask a question...
             </div>
@@ -98,7 +98,7 @@ export default function PollComposer() {
                 minLength={5}
                 maxLength={300}
                 rows={3}
-                className="block w-full mt-0 font-[var(--sans)] text-[18px] text-[var(--text)] bg-transparent border-0 border-b border-[var(--border)] rounded-none outline-none resize-none px-0 pb-3 mb-4 caret-[var(--green)] placeholder:text-[var(--text-muted)] focus:outline-none"
+                className="block w-full mt-0 font-[var(--sans)] text-[16px] text-[var(--text)] bg-transparent border border-[var(--border)] rounded-xl outline-none resize-none p-3 mb-4 caret-[var(--green)] placeholder:text-[var(--text-muted)] focus:outline-none"
               />
 
               <div className="flex gap-2.5 mb-3.5">
@@ -109,7 +109,7 @@ export default function PollComposer() {
                   placeholder="Option A"
                   required
                   maxLength={100}
-                  className="flex-1 w-auto mt-0 px-[14px] py-[9px] font-[var(--sans)] text-[14px] rounded-full border-[1.5px] border-[var(--border)] bg-[var(--bg-option)] text-[var(--text)] focus:outline-none"
+                  className="flex-1 w-auto mt-0 px-[14px] py-[9px] font-[var(--sans)] text-[14px] rounded-lg border-[1px] border-[var(--border)] text-[var(--text)] focus:outline-none"
                 />
                 <input
                   type="text"
@@ -118,7 +118,7 @@ export default function PollComposer() {
                   placeholder="Option B"
                   required
                   maxLength={100}
-                  className="flex-1 w-auto mt-0 px-[14px] py-[9px] font-[var(--sans)] text-[14px] rounded-full border-[1.5px] border-[var(--border)] bg-[var(--bg-option)] text-[var(--text)] focus:outline-none"
+                  className="flex-1 w-auto mt-0 px-[14px] py-[9px] font-[var(--sans)] text-[14px] rounded-lg border-[1px] border-[var(--border)] text-[var(--text)] focus:outline-none"
                 />
               </div>
 
@@ -126,7 +126,7 @@ export default function PollComposer() {
                 <select
                   value={durationSeconds}
                   onChange={(e) => setDurationSeconds(Number(e.target.value))}
-                  className="w-auto mt-0 py-[7px] rounded-full border-[1.5px] border-[var(--border)] bg-[var(--bg-option)] text-[var(--text)] text-[13px] cursor-pointer outline-none focus:ring-0 focus:shadow-none"
+                  className="w-[100px] mt-0 rounded-lg border-[var(--border)] text-[var(--text)] text-[14px] cursor-pointer outline-none focus:ring-0 focus:shadow-none"
                 >
                   {DURATION_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>

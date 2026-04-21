@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using RopPoll.Api.Models;
+using Propl.Api.Models;
 
-namespace RopPoll.Api.Data;
+namespace Propl.Api.Data;
 
 // DbContext is EF Core's main class. It represents a session with the database.
 // Each DbSet<T> maps to a table in PostgreSQL.

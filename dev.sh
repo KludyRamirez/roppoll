@@ -37,14 +37,14 @@ if lsof -ti :5001 >/dev/null 2>&1; then
   sleep 1
 fi
 
-(cd "$ROOT/backend" && dotnet run) &>/tmp/roppoll-backend.log &
+(cd "$ROOT/backend" && dotnet run) &>/tmp/propl-backend.log &
 PIDS+=($!)
 echo -e "  ${CYAN}waiting for http://localhost:5001...${RESET}"
 for i in $(seq 1 30); do
   curl -sf http://localhost:5001/api/polls >/dev/null 2>&1 && break
   sleep 1
   if [ "$i" -eq 30 ]; then
-    echo -e "  ${RED}Backend failed to start. Check /tmp/roppoll-backend.log${RESET}"
+    echo -e "  ${RED}Backend failed to start. Check /tmp/propl-backend.log${RESET}"
     exit 1
   fi
 done
@@ -57,14 +57,14 @@ if lsof -ti :5173 >/dev/null 2>&1; then
   lsof -ti :5173 | xargs kill -9 2>/dev/null || true
   sleep 1
 fi
-(cd "$ROOT/frontend" && npm run dev) &>/tmp/roppoll-frontend.log &
+(cd "$ROOT/frontend" && npm run dev) &>/tmp/propl-frontend.log &
 PIDS+=($!)
 echo -e "  ${CYAN}waiting for http://localhost:5173...${RESET}"
 for i in $(seq 1 30); do
   curl -sf http://localhost:5173 >/dev/null 2>&1 && break
   sleep 1
   if [ "$i" -eq 30 ]; then
-    echo -e "  ${RED}Frontend failed to start. Check /tmp/roppoll-frontend.log${RESET}"
+    echo -e "  ${RED}Frontend failed to start. Check /tmp/propl-frontend.log${RESET}"
     exit 1
   fi
 done
@@ -72,15 +72,15 @@ echo -e "  ${GREEN}ready${RESET}"
 
 # ── Ready ─────────────────────────────────────────────────────────────────────
 echo ""
-echo -e "${GREEN}${BOLD}RopPoll is running!${RESET}"
+echo -e "${GREEN}${BOLD}Propl is running!${RESET}"
 echo -e "  App      → ${CYAN}http://localhost:5173${RESET}"
 echo -e "  API      → ${CYAN}http://localhost:5001${RESET}"
-echo -e "  Logs     → /tmp/roppoll-backend.log  /tmp/roppoll-frontend.log"
+echo -e "  Logs     → /tmp/propl-backend.log  /tmp/propl-frontend.log"
 echo -e "\nPress ${BOLD}Ctrl+C${RESET} to stop all servers."
 echo ""
 
 # ── Tail both logs ────────────────────────────────────────────────────────────
-tail -f /tmp/roppoll-backend.log /tmp/roppoll-frontend.log &
+tail -f /tmp/propl-backend.log /tmp/propl-frontend.log &
 PIDS+=($!)
 
 wait

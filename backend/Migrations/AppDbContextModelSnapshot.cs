@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using RopPoll.Api.Data;
+using Propl.Api.Data;
 
 #nullable disable
 
-namespace RopPoll.Api.Migrations
+namespace Propl.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,7 @@ namespace RopPoll.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("RopPoll.Api.Models.PasswordResetToken", b =>
+            modelBuilder.Entity("Propl.Api.Models.PasswordResetToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace RopPoll.Api.Migrations
                     b.ToTable("PasswordResetTokens");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.Poll", b =>
+            modelBuilder.Entity("Propl.Api.Models.Poll", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,7 +102,7 @@ namespace RopPoll.Api.Migrations
                     b.ToTable("Polls");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.PollOption", b =>
+            modelBuilder.Entity("Propl.Api.Models.PollOption", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -127,7 +127,7 @@ namespace RopPoll.Api.Migrations
                     b.ToTable("PollOptions");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.RefreshToken", b =>
+            modelBuilder.Entity("Propl.Api.Models.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -160,7 +160,7 @@ namespace RopPoll.Api.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.User", b =>
+            modelBuilder.Entity("Propl.Api.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -187,7 +187,7 @@ namespace RopPoll.Api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.Vote", b =>
+            modelBuilder.Entity("Propl.Api.Models.Vote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -219,9 +219,9 @@ namespace RopPoll.Api.Migrations
                     b.ToTable("Votes");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.PasswordResetToken", b =>
+            modelBuilder.Entity("Propl.Api.Models.PasswordResetToken", b =>
                 {
-                    b.HasOne("RopPoll.Api.Models.User", "User")
+                    b.HasOne("Propl.Api.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -230,9 +230,9 @@ namespace RopPoll.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.Poll", b =>
+            modelBuilder.Entity("Propl.Api.Models.Poll", b =>
                 {
-                    b.HasOne("RopPoll.Api.Models.User", "Creator")
+                    b.HasOne("Propl.Api.Models.User", "Creator")
                         .WithMany()
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -241,9 +241,9 @@ namespace RopPoll.Api.Migrations
                     b.Navigation("Creator");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.PollOption", b =>
+            modelBuilder.Entity("Propl.Api.Models.PollOption", b =>
                 {
-                    b.HasOne("RopPoll.Api.Models.Poll", "Poll")
+                    b.HasOne("Propl.Api.Models.Poll", "Poll")
                         .WithMany("Options")
                         .HasForeignKey("PollId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -252,9 +252,9 @@ namespace RopPoll.Api.Migrations
                     b.Navigation("Poll");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.RefreshToken", b =>
+            modelBuilder.Entity("Propl.Api.Models.RefreshToken", b =>
                 {
-                    b.HasOne("RopPoll.Api.Models.User", "User")
+                    b.HasOne("Propl.Api.Models.User", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -263,21 +263,21 @@ namespace RopPoll.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.Vote", b =>
+            modelBuilder.Entity("Propl.Api.Models.Vote", b =>
                 {
-                    b.HasOne("RopPoll.Api.Models.PollOption", "Option")
+                    b.HasOne("Propl.Api.Models.PollOption", "Option")
                         .WithMany("Votes")
                         .HasForeignKey("OptionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RopPoll.Api.Models.Poll", "Poll")
+                    b.HasOne("Propl.Api.Models.Poll", "Poll")
                         .WithMany("Votes")
                         .HasForeignKey("PollId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RopPoll.Api.Models.User", "Voter")
+                    b.HasOne("Propl.Api.Models.User", "Voter")
                         .WithMany()
                         .HasForeignKey("VoterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -290,19 +290,19 @@ namespace RopPoll.Api.Migrations
                     b.Navigation("Voter");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.Poll", b =>
+            modelBuilder.Entity("Propl.Api.Models.Poll", b =>
                 {
                     b.Navigation("Options");
 
                     b.Navigation("Votes");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.PollOption", b =>
+            modelBuilder.Entity("Propl.Api.Models.PollOption", b =>
                 {
                     b.Navigation("Votes");
                 });
 
-            modelBuilder.Entity("RopPoll.Api.Models.User", b =>
+            modelBuilder.Entity("Propl.Api.Models.User", b =>
                 {
                     b.Navigation("RefreshTokens");
                 });
