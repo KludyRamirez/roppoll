@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { GoChevronUp, GoChevronDown } from "react-icons/go";
+import { PiFlagBannerFill } from "react-icons/pi";
 import { useVote } from "../hooks/usePolls";
 import { useAuthStore } from "../stores/authStore";
 import type { Poll } from "../types/poll";
 
 interface Props {
   poll: Poll;
+}
+
+function sc(str: string) {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function useCountdown(expiresAt: string, isExpired: boolean) {
@@ -33,26 +40,56 @@ function useCountdown(expiresAt: string, isExpired: boolean) {
   return label;
 }
 
-function VoteBar({ text, votes, total, isChosen, isAiChoice }: {
-  text: string; votes: number; total: number; isChosen: boolean; isAiChoice: boolean;
+function VoteBar({
+  text,
+  votes,
+  total,
+  isChosen,
+  isAiChoice,
+}: {
+  text: string;
+  votes: number;
+  total: number;
+  isChosen: boolean;
+  isAiChoice: boolean;
 }) {
   const pct = total > 0 ? Math.round((votes / total) * 100) : 0;
 
   return (
-    <div className="mb-2.5">
-      <div className="flex justify-between items-center mb-[5px]">
-        <span className={`text-[13px] flex items-center gap-1.5 ${isChosen ? "font-semibold text-[var(--green)]" : isAiChoice ? "font-normal text-[var(--purple)]" : "font-normal text-[var(--text)]"}`}>
-          {isChosen && <span className="text-[11px]">✓</span>}
-          {isAiChoice && <span className="text-[12px]">🤖</span>}
-          {text}
+    <div className="mb-3">
+      <div className="flex justify-between items-center mb-1.5">
+        <span
+          className={`text-[13px] flex items-center gap-1.5 ${
+            isChosen
+              ? "font-medium text-[var(--green)]"
+              : isAiChoice
+                ? "font-medium text-[var(--purple)]"
+                : "text-[var(--text-secondary)]"
+          }`}
+        >
+          {sc(text)}
         </span>
-        <span className={`text-[12px] font-semibold ${isChosen ? "text-[var(--green)]" : isAiChoice ? "text-[var(--purple)]" : "text-[var(--text-muted)]"}`}>
+        <span
+          className={`text-[12px] font-medium tabular-nums ${
+            isChosen
+              ? "text-[var(--green)]"
+              : isAiChoice
+                ? "text-[var(--purple)]"
+                : "text-[var(--text-muted)]"
+          }`}
+        >
           {pct}%
         </span>
       </div>
-      <div className="bg-[var(--bg-bar)] rounded-full h-[5px] overflow-hidden">
+      <div className="bg-[var(--bg-bar)] rounded-full h-[3px] overflow-hidden">
         <div
-          className={`h-full rounded-full transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isChosen ? "bg-[var(--green)]" : isAiChoice ? "bg-[var(--purple)]" : "bg-[var(--text-muted)]"}`}
+          className={`h-full rounded-full transition-[width] duration-700 ease-out ${
+            isChosen
+              ? "bg-[var(--green)]"
+              : isAiChoice
+                ? "bg-[var(--purple)]"
+                : "bg-[var(--text-muted)]"
+          }`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -71,17 +108,27 @@ export default function PollCard({ poll }: Props) {
   const optionA = poll.options[0];
   const optionB = poll.options[1];
 
-  const aiOptionIndex = poll.options.findIndex((o) => o.id === poll.aiChoiceOptionId);
+  const aiOptionIndex = poll.options.findIndex(
+    (o) => o.id === poll.aiChoiceOptionId,
+  );
 
   const majorityOption =
     optionA && optionB
-      ? optionA.voteCount >= optionB.voteCount ? optionA : optionB
+      ? optionA.voteCount >= optionB.voteCount
+        ? optionA
+        : optionB
       : null;
 
   const aiAgreesWithMajority =
+    totalVotes > 0 &&
     poll.aiChoiceOptionId !== null &&
     majorityOption !== null &&
     poll.aiChoiceOptionId === majorityOption.id;
+
+  const majorityPct =
+    totalVotes > 0 && majorityOption
+      ? Math.round((majorityOption.voteCount / totalVotes) * 100)
+      : 0;
 
   const handleVote = (optionId: number) => {
     if (!user || poll.isCreator || poll.hasVoted || isExpired) return;
@@ -92,122 +139,154 @@ export default function PollCard({ poll }: Props) {
 
   return (
     <article className="border-b border-[var(--border)] px-5 py-4 flex gap-3 bg-[var(--bg-card)]">
-
       {/* Avatar */}
-      <div className="w-[42px] h-[42px] rounded-full bg-[var(--green-bg)] text-[var(--green)] flex items-center justify-center font-bold text-[17px] shrink-0 select-none">
+      <div className="w-9 h-9 rounded-full bg-[var(--green-bg)] text-[var(--green)] flex items-center justify-center font-semibold text-[13px] shrink-0 select-none mt-0.5">
         {username[0].toUpperCase()}
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-
         {/* Header */}
-        <div className="flex items-baseline gap-1.5 flex-wrap mb-1">
-          <span className="font-bold text-[15px] text-[var(--text)]">{username}</span>
-          <span className="text-[14px] text-[var(--text-muted)]">{poll.creatorEmail}</span>
-          <span className="text-[14px] text-[var(--text-muted)]">·</span>
-          <span className={`text-[11px] font-bold tracking-[0.4px] uppercase px-2 py-[2px] rounded-full ${isExpired ? "bg-[var(--bg-option)] text-[var(--text-muted)]" : "bg-[var(--green-bg)] text-[var(--green)]"}`}>
-            {isExpired ? "Ended" : countdown}
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="font-semibold text-[14px] text-[var(--text)] leading-none truncate">
+            {username}
           </span>
+          {isExpired ? (
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="flex items-center gap-1 text-[11px] font-semibold leading-none text-[var(--text-muted)]">
+                <PiFlagBannerFill className="text-[12px] mt-[-1px]" />
+                <span className="">Resolved</span>
+              </span>
+              {poll.aiStatus === "Pending" && (
+                <span className="flex gap-[3px] items-center">
+                  <span className="w-1 h-1 rounded-full bg-[var(--text-muted)] animate-bounce [animation-delay:0ms]" />
+                  <span className="w-1 h-1 rounded-full bg-[var(--text-muted)] animate-bounce [animation-delay:150ms]" />
+                  <span className="w-1 h-1 rounded-full bg-[var(--text-muted)] animate-bounce [animation-delay:300ms]" />
+                </span>
+              )}
+            </div>
+          ) : (
+            <span className="text-[12px] font-medium leading-none text-[var(--green)]">
+              {countdown}
+            </span>
+          )}
         </div>
 
         {/* Question */}
-        <p className="text-[15px] leading-[1.55] text-[var(--text)] font-normal mb-3.5">
-          {poll.question}
+        <p
+          className="text-[15px] leading-snug text-[var(--text)] font-medium mt-2 mb-3 cursor-pointer"
+          onClick={() => setExpanded((v) => !v)}
+        >
+          {sc(poll.question)}
         </p>
 
         {/* Option pills */}
-        <div className="flex gap-2 mb-3.5">
+        <div className="flex gap-2 mb-3">
           {poll.options.map((opt) => {
             const isVoted = poll.votedOptionId === opt.id;
             const isAi = poll.aiChoiceOptionId === opt.id && isExpired;
             return (
               <span
                 key={opt.id}
-                className={`flex-1 px-3 py-[7px] rounded-full text-[13px] text-center overflow-hidden text-ellipsis whitespace-nowrap transition-all duration-150 border-[1.5px] ${
+                className={`flex-1 px-3 py-[6px] rounded-md text-[13px] text-center border truncate transition-all duration-150 ${
                   isVoted
-                    ? "font-semibold text-[var(--green)] bg-[var(--bg-option-voted)] border-[var(--green)]"
+                    ? "font-medium text-[var(--bg-card)] bg-[var(--text)] border-[var(--text)]"
                     : isAi
-                    ? "font-medium text-[var(--purple)] bg-[var(--bg-option-ai)] border-[var(--purple)]"
-                    : "font-medium text-[var(--text-secondary)] bg-[var(--bg-option)] border-transparent"
+                      ? "font-medium text-[var(--bg-card)] bg-[var(--text)] border-[var(--text)]"
+                      : "text-[var(--text-secondary)] bg-transparent border-[var(--border)]"
                 }`}
               >
-                {opt.text}
+                {sc(opt.text)}
               </span>
             );
           })}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center gap-5">
-          <span className="text-[13px] text-[var(--text-muted)]">
+        <div className="flex items-center gap-4">
+          <span className="text-[12px] text-[var(--text-muted)]">
             {totalVotes} {totalVotes === 1 ? "vote" : "votes"}
           </span>
           <button
             onClick={() => setExpanded((v) => !v)}
-            className="bg-transparent border-0 p-0 text-[var(--text-muted)] text-[13px] cursor-pointer font-[var(--sans)] flex items-center gap-1 font-medium"
+            className="px-2.5 py-1 rounded-md border border-[var(--border)] bg-transparent text-[var(--text-muted)] text-[12px] cursor-pointer font-[var(--sans)] font-medium flex items-center gap-1 hover:border-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-all duration-150"
           >
-            {expanded ? "Less" : "More"}
-            <span className="text-[10px]">{expanded ? "▲" : "▼"}</span>
+            {expanded ? "Hide" : "More"}
+            {expanded ? (
+              <GoChevronUp className="text-[11px]" />
+            ) : (
+              <GoChevronDown className="text-[11px]" />
+            )}
           </button>
         </div>
 
         {/* Expanded body */}
         {expanded && (
-          <div className="mt-[18px]">
-
+          <div className="mt-4 pt-4 border-t border-[var(--border)]">
             {/* ACTIVE */}
             {!isExpired && (
               <div>
                 {!user && (
-                  <div className="text-center py-3.5 pb-5 text-[var(--text-muted)] text-[14px]">
-                    <Link to="/login" className="text-[var(--green)] font-semibold no-underline">
+                  <p className="text-[13px] text-[var(--text-muted)] mb-4">
+                    <Link
+                      to="/login"
+                      className="text-[var(--green)] font-medium no-underline"
+                    >
                       Log in
                     </Link>{" "}
                     to vote on this poll
-                  </div>
+                  </p>
                 )}
 
                 {user && poll.isCreator && (
-                  <p className="text-[13px] text-[var(--text-muted)] mb-5 px-3.5 py-2.5 bg-[var(--bg-option)] rounded-[10px]">
+                  <p className="text-[13px] text-[var(--text-muted)] mb-4">
                     You created this poll — you can't vote on it.
                   </p>
                 )}
 
                 {user && !poll.isCreator && !poll.hasVoted && (
-                  <div className="flex gap-2.5 mb-5">
+                  <div className="flex gap-2 mb-4">
                     {poll.options.map((opt) => (
                       <button
                         key={opt.id}
                         onClick={() => handleVote(opt.id)}
                         disabled={vote.isPending}
-                        className="flex-1 py-[11px] rounded-full border-[1.5px] border-[var(--green)] bg-transparent text-[var(--green)] font-semibold text-[14px] font-[var(--sans)] transition-[background,color] duration-150 hover:bg-[var(--green)] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                        className="flex-1 py-2 rounded-md border border-[var(--border)] bg-transparent text-[var(--text)] font-medium text-[13px] font-[var(--sans)] hover:border-[var(--green)] hover:text-[var(--green)] hover:bg-[var(--green-bg)] transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                       >
-                        {opt.text}
+                        {sc(opt.text)}
                       </button>
                     ))}
                   </div>
                 )}
 
                 {user && poll.hasVoted && (
-                  <div className="flex items-center gap-2 mb-5 px-3.5 py-2.5 bg-[var(--green-bg)] rounded-[10px] border border-[var(--green)]">
-                    <span className="text-[15px]">✓</span>
-                    <span className="text-[13px] text-[var(--green)] font-medium">
+                  <p className="text-[13px] text-[var(--green)] font-medium mb-4 flex items-center gap-1.5">
+                    <span>—</span>
+                    <span>
                       You voted for{" "}
-                      <strong>{poll.options.find((o) => o.id === poll.votedOptionId)?.text}</strong>
+                      <strong className="font-semibold">
+                        {
+                          poll.options.find((o) => o.id === poll.votedOptionId)
+                            ?.text
+                        }
+                      </strong>
                     </span>
-                  </div>
+                  </p>
                 )}
 
                 {poll.options.map((opt) => (
                   <VoteBar
-                    key={opt.id} text={opt.text} votes={opt.voteCount} total={totalVotes}
-                    isChosen={poll.votedOptionId === opt.id} isAiChoice={false}
+                    key={opt.id}
+                    text={opt.text}
+                    votes={opt.voteCount}
+                    total={totalVotes}
+                    isChosen={poll.votedOptionId === opt.id}
+                    isAiChoice={false}
                   />
                 ))}
-                <span className="text-[12px] text-[var(--text-muted)]">
+                <p className="text-[12px] text-[var(--text-muted)] mt-1">
                   {totalVotes} total {totalVotes === 1 ? "vote" : "votes"}
-                </span>
+                </p>
               </div>
             )}
 
@@ -215,57 +294,144 @@ export default function PollCard({ poll }: Props) {
             {isExpired && (
               <div>
                 {poll.aiStatus === "Pending" && (
-                  <div className="flex items-center gap-2.5 px-3.5 py-3 bg-[var(--bg-option)] rounded-[10px] mb-5 text-[13px] text-[var(--text-muted)]">
-                    <span>🤖</span>
-                    <span>Waiting for AI's opinion…</span>
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="flex gap-[3px] items-center">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-muted)] animate-bounce [animation-delay:0ms]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-muted)] animate-bounce [animation-delay:150ms]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-muted)] animate-bounce [animation-delay:300ms]" />
+                      </span>
+                      <span className="text-[13px] text-[var(--text-muted)]">
+                        Ro and Plo are thinking…
+                      </span>
+                    </div>
+                    <div className="space-y-2 animate-pulse">
+                      <div className="h-2.5 bg-[var(--bg-option)] rounded-full w-3/4" />
+                      <div className="h-2.5 bg-[var(--bg-option)] rounded-full w-1/2" />
+                      <div className="h-2.5 bg-[var(--bg-option)] rounded-full w-2/3" />
+                    </div>
                   </div>
                 )}
 
                 {poll.aiStatus === "Failed" && (
-                  <div className="px-3.5 py-3 bg-[var(--bg-option)] rounded-[10px] mb-5 text-[13px] text-[var(--red)]">
-                    ⚠ AI couldn't give an opinion on this one.
-                  </div>
+                  <p className="mb-4 text-[13px] text-[var(--red)]">
+                    Ro couldn't give an opinion on this one.
+                  </p>
                 )}
 
                 {poll.aiStatus === "Complete" && (
-                  <div className="mb-5">
-                    <p className="text-[11px] font-bold tracking-[0.6px] uppercase text-[var(--text-muted)] mb-3">
+                  <div className="mb-4">
+                    <p className="text-[11px] font-semibold tracking-widest uppercase text-[var(--text-muted)] mb-4">
                       Results
                     </p>
 
                     {/* Human votes */}
-                    <div className="bg-[var(--bg-muted)] rounded-xl px-4 py-3.5 mb-3">
-                      <p className="text-[12px] font-bold text-[var(--text-secondary)] tracking-[0.2px] mb-3">
-                        👥 Human votes
+                    <div className="mb-1">
+                      <p className="text-[12px] text-[var(--text-muted)] mb-3">
+                        Human votes
                       </p>
                       {poll.options.map((opt) => (
                         <VoteBar
-                          key={opt.id} text={opt.text} votes={opt.voteCount} total={totalVotes}
-                          isChosen={poll.votedOptionId === opt.id} isAiChoice={false}
+                          key={opt.id}
+                          text={opt.text}
+                          votes={opt.voteCount}
+                          total={totalVotes}
+                          isChosen={poll.votedOptionId === opt.id}
+                          isAiChoice={false}
                         />
                       ))}
-                      <span className="text-[12px] text-[var(--text-muted)]">
+                      <p className="text-[12px] text-[var(--text-muted)] mt-1">
                         {totalVotes} total {totalVotes === 1 ? "vote" : "votes"}
+                      </p>
+                    </div>
+
+                    <div className="h-px bg-[var(--border)] my-4" />
+
+                    {/* AI opinion */}
+                    <div className="pl-3 border-l-2 border-[var(--purple)]">
+                      <p className="text-[12px] font-medium text-[var(--purple)] mb-2">
+                        Ro first take
+                      </p>
+                      <p className="text-[14px] font-semibold text-[var(--text)] mb-1">
+                        {sc(poll.options[aiOptionIndex]?.text ?? "—")}
+                      </p>
+                      <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-3">
+                        {poll.aiExplanation}
+                      </p>
+                      <span
+                        className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-md ${
+                          aiAgreesWithMajority
+                            ? "text-[var(--green)] bg-[var(--green-bg)]"
+                            : "text-[var(--orange)] bg-[var(--orange-bg)]"
+                        }`}
+                      >
+                        {aiAgreesWithMajority
+                          ? `Agrees with humans ${majorityPct}%`
+                          : "Disagrees with humans"}
                       </span>
                     </div>
 
-                    {/* AI opinion */}
-                    <div className="rounded-xl px-4 py-3.5 bg-[var(--bg-ai-panel)] border-l-[3px] border-[var(--purple)]">
-                      <p className="text-[12px] font-bold text-[var(--purple)] tracking-[0.2px] mb-2.5">
-                        🤖 AI's take
+                    {/* Ro vs Plo debate */}
+                    {poll.debateStatus === "Complete" &&
+                      poll.aiDebate &&
+                      poll.aiDebate.length > 0 && (
+                        <>
+                          <div className="h-px bg-[var(--border)] my-4" />
+                          <p className="text-[11px] font-semibold tracking-widest uppercase text-[var(--text-muted)] mb-3">
+                            Ro vs Plo
+                          </p>
+                          <div className="flex flex-col gap-3">
+                            {poll.aiDebate.slice(1).map((msg, i) => {
+                              const isRo = msg.speaker === "Ro";
+                              return (
+                                <div
+                                  key={i}
+                                  className={`pl-3 border-l-2 ${isRo ? "border-[var(--purple)]" : "border-[var(--orange)]"}`}
+                                >
+                                  <div className="flex items-center gap-1.5 mb-1">
+                                    <span
+                                      className={`text-[11px] font-semibold ${isRo ? "text-[var(--purple)]" : "text-[var(--orange)]"}`}
+                                    >
+                                      {msg.speaker}
+                                    </span>
+                                    <span className="text-[11px] font-medium text-[var(--text-secondary)]">
+                                      {sc(msg.pick)}
+                                    </span>
+                                  </div>
+                                  <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+                                    {msg.message}
+                                  </p>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          {(() => {
+                            const last =
+                              poll.aiDebate[poll.aiDebate.length - 1];
+                            return (
+                              <p className="mt-3 text-[16px] text-[var(--text-muted)]">
+                                <span className="font-semibold text-[var(--text)]">
+                                  Ro
+                                </span>{" "}
+                                and{" "}
+                                <span className="font-semibold text-[var(--text)]">
+                                  Plo
+                                </span>{" "}
+                                agreed on{" "}
+                                <span className="font-semibold text-[var(--text)]">
+                                  {sc(last.pick)}
+                                </span>
+                              </p>
+                            );
+                          })()}
+                        </>
+                      )}
+
+                    {poll.debateStatus === "Failed" && (
+                      <p className="text-[12px] text-[var(--red)] mt-3">
+                        Ro and Plo couldn't finish their debate.
                       </p>
-                      <p className="text-[14px] font-semibold text-[var(--text)] mb-1.5">
-                        {poll.options[aiOptionIndex]?.text ?? "—"}
-                      </p>
-                      <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed italic mb-3">
-                        "{poll.aiExplanation}"
-                      </p>
-                      <span className={`inline-block text-[11px] font-bold tracking-[0.2px] px-2.5 py-1 rounded-full ${aiAgreesWithMajority ? "bg-[var(--green-bg)] text-[var(--green)]" : "bg-[var(--orange-bg)] text-[var(--orange)]"}`}>
-                        {aiAgreesWithMajority
-                          ? `✅ Agrees with humans · ${majorityOption ? Math.round((majorityOption.voteCount / totalVotes) * 100) : 0}%`
-                          : "⚡ Disagrees with humans"}
-                      </span>
-                    </div>
+                    )}
                   </div>
                 )}
 
@@ -273,13 +439,17 @@ export default function PollCard({ poll }: Props) {
                   <div>
                     {poll.options.map((opt) => (
                       <VoteBar
-                        key={opt.id} text={opt.text} votes={opt.voteCount} total={totalVotes}
-                        isChosen={poll.votedOptionId === opt.id} isAiChoice={false}
+                        key={opt.id}
+                        text={opt.text}
+                        votes={opt.voteCount}
+                        total={totalVotes}
+                        isChosen={poll.votedOptionId === opt.id}
+                        isAiChoice={false}
                       />
                     ))}
-                    <span className="text-[12px] text-[var(--text-muted)]">
+                    <p className="text-[12px] text-[var(--text-muted)] mt-1">
                       {totalVotes} total {totalVotes === 1 ? "vote" : "votes"}
-                    </span>
+                    </p>
                   </div>
                 )}
               </div>
@@ -288,7 +458,8 @@ export default function PollCard({ poll }: Props) {
             {vote.isError && (
               <p className="text-[var(--red)] text-[13px] mt-3">
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {(vote.error as any)?.response?.data?.message ?? "Failed to vote."}
+                {(vote.error as any)?.response?.data?.message ??
+                  "Failed to vote."}
               </p>
             )}
           </div>

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Propl.Api.Data;
@@ -9,13 +10,19 @@ namespace Propl.Api.Services;
 
 // Runs in the background on a 30-second interval.
 // 1. Finds Active polls whose ExpiresAt has passed → marks them Expired
-// 2. Calls OpenAI to get an opinion on each expired poll
-// 3. Broadcasts the final result to all connected SignalR clients
+// 2. Gets Ro's opinion on each expired poll
+// 3. Runs the Ro vs Plo debate
+// 4. Broadcasts the final result to all connected SignalR clients
 public class PollExpiryService(
     IServiceScopeFactory scopeFactory,
     IHubContext<PollHub> hubContext,
     ILogger<PollExpiryService> logger) : BackgroundService
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
@@ -44,71 +51,106 @@ public class PollExpiryService(
 
         if (expiredPolls.Count == 0) return;
 
-        // Mark all as Expired first
         foreach (var poll in expiredPolls)
             poll.Status = PollStatus.Expired;
 
         await db.SaveChangesAsync();
         logger.LogInformation("Expired {Count} poll(s)", expiredPolls.Count);
 
-        // For each expired poll: ask OpenAI, save result, broadcast
         foreach (var poll in expiredPolls)
         {
             var optionA = poll.Options.First(o => o.DisplayOrder == 0);
             var optionB = poll.Options.First(o => o.DisplayOrder == 1);
 
+            // Step 1: Ro's initial opinion
+            int roChosenIndex;
+            string roExplanation;
             try
             {
-                var (chosenIndex, explanation) = await openAi.GetOpinionAsync(
+                (roChosenIndex, roExplanation) = await openAi.GetOpinionAsync(
                     poll.Question, optionA.Text, optionB.Text);
 
-                poll.AiChoiceOptionId = chosenIndex == 0 ? optionA.Id : optionB.Id;
-                poll.AiExplanation = explanation;
+                poll.AiChoiceOptionId = roChosenIndex == 0 ? optionA.Id : optionB.Id;
+                poll.AiExplanation = roExplanation;
                 poll.AiStatus = AiStatus.Complete;
 
                 logger.LogInformation(
-                    "Poll {Id}: AI picked option {Index} — \"{Explanation}\"",
-                    poll.Id, chosenIndex, explanation);
+                    "Poll {Id}: Ro picked option {Index} — \"{Explanation}\"",
+                    poll.Id, roChosenIndex, roExplanation);
             }
             catch (Exception ex)
             {
                 poll.AiStatus = AiStatus.Failed;
-                logger.LogWarning(ex, "Poll {Id}: AI opinion failed", poll.Id);
+                poll.DebateStatus = DebateStatus.Failed;
+                logger.LogWarning(ex, "Poll {Id}: Ro opinion failed", poll.Id);
+                await db.SaveChangesAsync();
+                await hubContext.Clients.All.SendAsync("PollUpdated", MapToPublicResponse(poll));
+                continue;
+            }
+
+            // Step 2: Ro vs Plo debate
+            try
+            {
+                var debateMessages = await openAi.RunDebateAsync(
+                    poll.Question, optionA.Text, optionB.Text,
+                    roChosenIndex, roExplanation);
+
+                poll.AiDebate = JsonSerializer.Serialize(debateMessages, JsonOptions);
+                poll.DebateStatus = DebateStatus.Complete;
+
+                logger.LogInformation(
+                    "Poll {Id}: debate complete in {Turns} turns",
+                    poll.Id, debateMessages.Count);
+            }
+            catch (Exception ex)
+            {
+                poll.DebateStatus = DebateStatus.Failed;
+                logger.LogWarning(ex, "Poll {Id}: debate failed", poll.Id);
             }
 
             await db.SaveChangesAsync();
-
-            // Broadcast final state (Expired + AI result) to all clients
             await hubContext.Clients.All.SendAsync("PollUpdated", MapToPublicResponse(poll));
         }
     }
 
-    private static PollResponse MapToPublicResponse(Poll poll) => new()
+    private static PollResponse MapToPublicResponse(Poll poll)
     {
-        Id = poll.Id,
-        Question = poll.Question,
-        DurationSeconds = poll.DurationSeconds,
-        CreatedAt = poll.CreatedAt,
-        ExpiresAt = poll.ExpiresAt,
-        Status = poll.Status,
-        AiStatus = poll.AiStatus,
-        CreatorId = poll.CreatorId,
-        CreatorEmail = poll.Creator.Email,
-        IsCreator = false,
-        HasVoted = false,
-        VotedOptionId = null,
-        TotalVotes = poll.Votes.Count,
-        Options = poll.Options
-            .OrderBy(o => o.DisplayOrder)
-            .Select(o => new PollOptionResponse
-            {
-                Id = o.Id,
-                Text = o.Text,
-                DisplayOrder = o.DisplayOrder,
-                VoteCount = o.Votes.Count,
-            })
-            .ToList(),
-        AiChoiceOptionId = poll.AiChoiceOptionId,
-        AiExplanation = poll.AiExplanation,
-    };
+        List<DebateMessage>? debate = null;
+        if (poll.AiDebate is not null)
+        {
+            try { debate = JsonSerializer.Deserialize<List<DebateMessage>>(poll.AiDebate, JsonOptions); }
+            catch { /* leave null on corrupt JSON */ }
+        }
+
+        return new PollResponse
+        {
+            Id = poll.Id,
+            Question = poll.Question,
+            DurationSeconds = poll.DurationSeconds,
+            CreatedAt = poll.CreatedAt,
+            ExpiresAt = poll.ExpiresAt,
+            Status = poll.Status,
+            AiStatus = poll.AiStatus,
+            CreatorId = poll.CreatorId,
+            CreatorEmail = poll.Creator.Email,
+            IsCreator = false,
+            HasVoted = false,
+            VotedOptionId = null,
+            TotalVotes = poll.Votes.Count,
+            Options = poll.Options
+                .OrderBy(o => o.DisplayOrder)
+                .Select(o => new PollOptionResponse
+                {
+                    Id = o.Id,
+                    Text = o.Text,
+                    DisplayOrder = o.DisplayOrder,
+                    VoteCount = o.Votes.Count,
+                })
+                .ToList(),
+            AiChoiceOptionId = poll.AiChoiceOptionId,
+            AiExplanation = poll.AiExplanation,
+            DebateStatus = poll.DebateStatus,
+            AiDebate = debate,
+        };
+    }
 }

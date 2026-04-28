@@ -37,6 +37,13 @@ public class PollOptionResponse
     public int VoteCount { get; set; }
 }
 
+public class DebateMessage
+{
+    public required string Speaker { get; set; }  // "Ro" or "Plo"
+    public required string Pick { get; set; }      // option text, e.g. "Cats"
+    public required string Message { get; set; }
+}
+
 public class PollResponse
 {
     public int Id { get; set; }
@@ -63,4 +70,8 @@ public class PollResponse
     // Only populated when AiStatus == Complete
     public int? AiChoiceOptionId { get; set; }
     public string? AiExplanation { get; set; }
+
+    // Ro vs Plo debate — only populated when DebateStatus == Complete
+    public DebateStatus DebateStatus { get; set; }
+    public List<DebateMessage>? AiDebate { get; set; }
 }

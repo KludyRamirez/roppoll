@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,10 @@ namespace Propl.Api.Controllers;
 public class PollsController(AppDbContext db) : ControllerBase
 {
     private static readonly int[] AllowedDurations = [60, 300, 900, 3600, 86400];
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
     // ════════════════════════════════════════
     // POST /api/polls — Create a new poll
@@ -204,7 +209,11 @@ public class PollsController(AppDbContext db) : ControllerBase
                 })
                 .ToList(),
             AiChoiceOptionId = poll.AiChoiceOptionId,
-            AiExplanation = poll.AiExplanation
+            AiExplanation = poll.AiExplanation,
+            DebateStatus = poll.DebateStatus,
+            AiDebate = poll.AiDebate is not null
+                ? JsonSerializer.Deserialize<List<DebateMessage>>(poll.AiDebate, JsonOptions)
+                : null,
         };
     }
 }

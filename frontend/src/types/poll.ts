@@ -1,6 +1,13 @@
 // Mirror of backend enums
 export type PollStatus = "Active" | "Expired";
 export type AiStatus = "Pending" | "Complete" | "Failed";
+export type DebateStatus = "Pending" | "Complete" | "Failed";
+
+export interface DebateMessage {
+  speaker: string; // "Ro" or "Plo"
+  pick: string;    // option text
+  message: string;
+}
 
 export interface PollOption {
   id: number;
@@ -34,6 +41,10 @@ export interface Poll {
   // AI result — only set when aiStatus === "Complete"
   aiChoiceOptionId: number | null;
   aiExplanation: string | null;
+
+  // Ro vs Plo debate — only set when debateStatus === "Complete"
+  debateStatus: DebateStatus;
+  aiDebate: DebateMessage[] | null;
 }
 
 // Duration presets with display labels

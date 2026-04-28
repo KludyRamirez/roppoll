@@ -6,6 +6,7 @@ import { usePollHub } from "../hooks/usePollHub";
 import { useThemeStore } from "../stores/themeStore";
 import PollCard from "../components/PollCard";
 import PollComposer from "../components/PollComposer";
+import { GoMoon, GoSun } from "react-icons/go";
 
 export default function PollFeedPage() {
   const user = useAuthStore((s) => s.user);
@@ -18,42 +19,39 @@ export default function PollFeedPage() {
     <div className="max-w-[620px] mx-auto px-5 pt-5 pb-10">
       {/* Nav */}
       <div className="flex justify-between items-center mb-5">
-        <h1 className="m-0 text-[22px] font-extrabold tracking-tight text-[var(--text)]">
-          Propl
+        <h1 className="m-0 text-2xl font-semibold tracking-tight text-[var(--text)]">
+          PropL
         </h1>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-1.5 items-center">
           <button
             onClick={toggle}
             title={
               theme === "light" ? "Switch to dark mode" : "Switch to light mode"
             }
-            className="px-2.5 py-[7px] rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text)] cursor-pointer text-[15px] leading-none"
+            className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--border)] bg-transparent text-[var(--text-muted)] cursor-pointer text-[13px] leading-none hover:text-[var(--text)] hover:border-[var(--text-muted)] transition-all duration-150"
           >
-            {theme === "light" ? "🌙" : "☀️"}
+            {theme === "light" ? <GoMoon /> : <GoSun />}
           </button>
 
           {user ? (
             <>
-              <small className="text-[var(--text-muted)] text-[13px]">
-                {user.email}
-              </small>
               <button
                 onClick={() => logout.mutate()}
-                className="px-[14px] py-[7px] rounded-full border border-[var(--border)] bg-[var(--bg-card)] cursor-pointer text-[13px] text-[var(--text-secondary)] font-[var(--sans)]"
+                className="px-3 py-1.5 rounded-md border border-[var(--border)] bg-transparent cursor-pointer text-[13px] text-[var(--text-secondary)] font-[var(--sans)] hover:border-[var(--text-muted)] hover:text-[var(--text)] transition-all duration-150"
               >
-                Logout
+                Log out
               </button>
             </>
           ) : (
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               <Link to="/login">
-                <button className="px-4 py-[7px] rounded-full border border-[var(--border)] bg-[var(--bg-card)] cursor-pointer text-[13px] text-[var(--text)] font-[var(--sans)]">
+                <button className="px-3 py-1.5 rounded-md border border-[var(--border)] bg-transparent cursor-pointer text-[13px] text-[var(--text)] font-[var(--sans)] hover:border-[var(--text-muted)] transition-all duration-150">
                   Log in
                 </button>
               </Link>
               <Link to="/register">
-                <button className="px-4 py-[7px] rounded-full border-0 bg-[var(--green)] text-white font-bold cursor-pointer text-[13px] font-[var(--sans)]">
+                <button className="mt-[1px] px-3 py-1.5 border-0 bg-[var(--text)] text-[var(--bg-card)] font-medium cursor-pointer text-[13px] font-[var(--sans)] hover:opacity-80 transition-opacity duration-150">
                   Sign up
                 </button>
               </Link>
@@ -66,7 +64,7 @@ export default function PollFeedPage() {
       <div className="border border-[var(--border)] rounded-2xl overflow-hidden bg-[var(--bg-card)]">
         {/* Tab header */}
         <div className="flex border-b border-[var(--border)]">
-          <div className="flex-1 text-center py-4 pb-[14px] text-[15px] font-bold text-[var(--text)] border-b-[10px] border-[var(--green)]">
+          <div className="flex-1 text-center py-4 pb-[14px] text-[15px] font-bold text-[var(--text)]">
             For you
           </div>
         </div>

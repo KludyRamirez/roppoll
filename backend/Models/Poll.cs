@@ -13,6 +13,13 @@ public enum AiStatus
     Failed     // AI API call failed
 }
 
+public enum DebateStatus
+{
+    Pending,   // Debate hasn't started
+    Complete,  // Ro and Plo reached agreement
+    Failed     // Debate API call failed
+}
+
 public class Poll
 {
     public int Id { get; set; }
@@ -32,6 +39,10 @@ public class Poll
     // Set by OpenAiService after the poll expires
     public int? AiChoiceOptionId { get; set; }
     public string? AiExplanation { get; set; }
+
+    // Ro vs Plo debate — JSON array of DebateMessage, set after AiStatus = Complete
+    public DebateStatus DebateStatus { get; set; } = DebateStatus.Pending;
+    public string? AiDebate { get; set; }
 
     // Foreign key — who created this poll
     public int CreatorId { get; set; }

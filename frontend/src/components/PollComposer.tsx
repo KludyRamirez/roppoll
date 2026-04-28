@@ -52,7 +52,7 @@ export default function PollComposer() {
   if (!user) {
     return (
       <div className="flex items-center gap-3 px-5 py-4 border-b border-[var(--border)]">
-        <div className="w-[42px] h-[42px] rounded-full bg-[var(--bg-option)] shrink-0" />
+        <div className="w-[36px] h-[36px] rounded-full bg-[var(--bg-option)] shrink-0" />
         <span className="text-[15px] text-[var(--text-muted)]">
           <Link
             to="/login"
@@ -70,7 +70,7 @@ export default function PollComposer() {
     <div className="px-5 py-4 border-b border-[var(--border)]">
       <div className="flex gap-3">
         {/* Avatar */}
-        <div className="w-[42px] h-[42px] rounded-full bg-[var(--green-bg)] text-[var(--green)] flex items-center justify-center font-bold text-[17px] shrink-0 select-none">
+        <div className="w-[36px] h-[36px] rounded-full bg-[var(--green-bg)] text-[var(--green)] flex items-center justify-center font-bold text-[13px] shrink-0 select-none">
           {username[0]?.toUpperCase()}
         </div>
 
@@ -80,7 +80,7 @@ export default function PollComposer() {
           {!expanded && (
             <div
               onClick={expand}
-              className="py-[11px] text-[16px] text-[var(--text-muted)] cursor-text select-none"
+              className="py-[7px] text-[16px] text-[var(--text-muted)] cursor-text select-none"
             >
               Ask a question...
             </div>
@@ -109,7 +109,7 @@ export default function PollComposer() {
                   placeholder="Option A"
                   required
                   maxLength={100}
-                  className="flex-1 w-auto mt-0 px-[14px] py-[9px] font-[var(--sans)] text-[14px] rounded-lg border-[1px] border-[var(--border)] text-[var(--text)] focus:outline-none"
+                  className="flex-1 w-auto mt-0 px-3 py-2 font-[var(--sans)] text-[13px] rounded-lg border-[1px] border-[var(--border)] text-[var(--text)] focus:outline-none"
                 />
                 <input
                   type="text"
@@ -118,7 +118,7 @@ export default function PollComposer() {
                   placeholder="Option B"
                   required
                   maxLength={100}
-                  className="flex-1 w-auto mt-0 px-[14px] py-[9px] font-[var(--sans)] text-[14px] rounded-lg border-[1px] border-[var(--border)] text-[var(--text)] focus:outline-none"
+                  className="flex-1 w-auto mt-0 px-3 py-2 font-[var(--sans)] text-[13px] rounded-lg border-[1px] border-[var(--border)] text-[var(--text)] focus:outline-none"
                 />
               </div>
 
@@ -139,14 +139,14 @@ export default function PollComposer() {
                   <button
                     type="button"
                     onClick={cancel}
-                    className="px-[18px] py-2 rounded-full border-[1.5px] border-[var(--border)] bg-transparent text-[var(--text-secondary)] font-semibold text-[14px] cursor-pointer font-[var(--sans)]"
+                    className="px-4 py-1.5 rounded-full border-[1px] border-[var(--border)] bg-transparent text-[var(--text-secondary)] font-semibold text-[13px] cursor-pointer font-[var(--sans)]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={createPoll.isPending || !canPost}
-                    className="px-5 py-2 rounded-full border-0 bg-[var(--green)] text-white font-bold text-[14px] font-[var(--sans)] transition-opacity disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                    className="px-4 py-1.5 rounded-full border-0 bg-[var(--green)] text-white font-bold text-[13px] font-[var(--sans)] transition-opacity disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {createPoll.isPending ? "Posting..." : "Post"}
                   </button>

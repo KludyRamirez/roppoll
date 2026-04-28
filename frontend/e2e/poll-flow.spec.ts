@@ -23,6 +23,16 @@ test.describe('Propl', () => {
     await request.post('http://localhost:5001/api/auth/register', {
       data: { email: s.bobEmail, password: s.password },
     })
+
+    // Create the poll via API so voting/feed tests have it regardless of test order
+    const loginResp = await request.post('http://localhost:5001/api/auth/login', {
+      data: { email: s.aliceEmail, password: s.password },
+    })
+    const { accessToken } = await loginResp.json()
+    await request.post('http://localhost:5001/api/polls', {
+      data: { question: s.pollQuestion, optionA: 'Cats', optionB: 'Dogs', durationSeconds: 300 },
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
   })
 
   // ─── Auth ───────────────────────────────────────────────────
@@ -72,15 +82,15 @@ test.describe('Propl', () => {
     await page.getByRole('button', { name: 'Login' }).click()
     await expect(page).toHaveURL('/', { timeout: 10_000 })
 
-    // Expand the inline composer
+    // Expand the inline composer and create a second poll to test the UI
+    const uiQuestion = `${s.pollQuestion} (UI)`
     await page.getByText('Ask a question...').click()
-
-    await page.getByPlaceholder('Ask a question...').fill(s.pollQuestion)
+    await page.getByPlaceholder('Ask a question...').fill(uiQuestion)
     await page.getByPlaceholder('Option A').fill('Cats')
     await page.getByPlaceholder('Option B').fill('Dogs')
     await page.getByRole('button', { name: 'Post' }).click()
 
-    await expect(page.getByText(s.pollQuestion)).toBeVisible({ timeout: 10_000 })
+    await expect(page.getByText(uiQuestion)).toBeVisible({ timeout: 10_000 })
   })
 
   // ─── Voting ─────────────────────────────────────────────────

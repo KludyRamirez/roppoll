@@ -25,6 +25,8 @@
   --red:             #c0392b;
   --orange:          #e65100;
   --orange-bg:       #fff3e0;
+  --blue:            #2563eb;
+  --blue-bg:         #eff6ff;
 
   --sans: 'Roboto', system-ui, sans-serif;
 
@@ -56,6 +58,8 @@
   --red:             #f87171;
   --orange:          #fb923c;
   --orange-bg:       #2d1a0e;
+  --blue:            #60a5fa;
+  --blue-bg:         #1e2d45;
 
   color-scheme: dark;
 }
